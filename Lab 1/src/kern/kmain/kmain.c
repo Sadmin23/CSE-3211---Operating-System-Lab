@@ -37,31 +37,70 @@
 #include <usart.h>
 // #include "../include/float.h"
 
+void led_on(int a)
+{
+	GPIOA->ODR |= (1U << a);
+}
+
+void led_off()
+{
+	int i;
+
+	for (i = 0; i < 12; i++)
+	{
+		if (i != 2 && i != 3)
+			GPIOA->ODR &= (1U << i);
+	}
+}
+
+int led_sets[10][10] = {
+	{0, 1, 4, 5, 6, -1, 8, 9, 10, 11},		// 0
+	{-1, -1, -1, 5, -1, -1, -1, 9, -1, -1}, // 1
+	{0, 1, -1, 5, 6, 7, 8, -1, 10, 11},		// 2
+	{0, 1, -1, 5, 6, 7, -1, 9, 10, 11},		// 3
+	{0, -1, 4, 5, 6, 7, -1, 9, -1, -1},		// 4
+	{0, 1, 4, -1, 6, 7, -1, 9, 10, 11},		// 5
+	{0, 1, 4, -1, 6, 7, 8, 9, 10, 11},		// 6
+	{0, 1, -1, 5, -1, -1, -1, 9, -1, -1},	// 7
+	{0, 1, 4, 5, 6, 7, 8, 9, 10, 11},		// 8
+	{0, 1, 4, 5, 6, 7, -1, 9, 10, 11},		// 9
+};
+
+void select_leds(int a)
+{
+	led_off();
+
+	for (int i = 0; i < 10; i++)
+	{
+		int x = led_sets[a][i];
+
+		if (x != -1)
+			led_on(x);
+	}
+}
+
 void kmain(void)
 {
 	__sys_init();
 
-	// uint32_t b=0;
-	float x = 50.59;
-	uint8_t y = 23, f = 56;
-	x++;
-	kprintf("%d %d %f\n", y, f, x);
-	kprintf("After Input\n");
-	// uint8_t p[8]="1234.34\0";
-	// x=str2float(p);
-	kprintf("After Input\n");
-	kprintf("Time Elapse %d ms\n", __getTime());
-	uint8_t b;
-	kscanf((uint8_t *)"%d", (uint8_t *)b);
-	kprintf((uint8_t *)"%d", (uint8_t *)b);
+	RCC->AHB1ENR |= (1 << 0);
+
+	int i;
+
+	for (i = 0; i < 12; i++)
+	{
+		if (i != 2 && i != 3)
+			GPIOA->MODER |= (1U << 2 * i);
+	}
+
+	kprintf("After Init\n");
+
 	while (1)
 	{
-		//	kprintf((uint8_t*)"%d",(uint8_t*)a);
-		//	kscanf((uint8_t*)"%d",(uint8_t*)b);
-		//	kprintf((uint8_t*)"%d",(uint8_t*)b);
-		//	a++;
-		//	b++;
-		// you can change the following line by replacing a delay function
-		// for(uint32_t i=0;i<100000000;i++){kprintf("Time Elapse %d ms\n",__getTime());}
+		int b;
+		kscanf("%d", &b);
+		kprintf("%d", b);
+
+		select_leds(b);
 	}
 }

@@ -26,10 +26,14 @@ void select_leds(int a)
 }
 int main()
 {
-    int x;
+    while (1)
+    {
+        int x;
 
-    while (scanf("%d", &x) == 1)
-        led_on(x);
+        scanf("%d", &x);
+
+        select_leds(x);
+    }
 
     return 0;
 }
