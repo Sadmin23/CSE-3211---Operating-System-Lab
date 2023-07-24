@@ -70,6 +70,8 @@ void select_leds(int a)
 {
 	led_off();
 
+	GPIOA->ODR |= (1U << 12);
+
 	for (int i = 0; i < 10; i++)
 	{
 		int x = led_sets[a][i];
@@ -87,7 +89,7 @@ void kmain(void)
 
 	int i;
 
-	for (i = 0; i < 12; i++)
+	for (i = 0; i <= 12; i++)
 	{
 		if (i != 2 && i != 3)
 			GPIOA->MODER |= (1U << 2 * i);
@@ -100,7 +102,6 @@ void kmain(void)
 		int b;
 		kscanf("%d", &b);
 		kprintf("%d", b);
-
 		select_leds(b);
 	}
 }
