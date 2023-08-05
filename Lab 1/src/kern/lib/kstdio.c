@@ -44,7 +44,7 @@
  */
 // Simplified version of printf
 
-void kprintf(int driver, char *format, ...)
+void kprintf(char *format, ...)
 {
 	// write your code here
 	char *tr;
@@ -55,31 +55,29 @@ void kprintf(int driver, char *format, ...)
 	// uint32_t *intval;
 	va_start(list, format);
 
-	if (driver == 1)
+	for (tr = format; *tr != '\0'; tr++)
 	{
-		for (tr = format; *tr != '\0'; tr++)
+		while (*tr != '%' && *tr != '\0')
 		{
-			while (*tr != '%' && *tr != '\0')
-			{
-				tr++;
-			}
-			if (*tr == '\0')
-				break;
 			tr++;
-			switch (*tr)
-			{
+		}
+		if (*tr == '\0')
+			break;
+		tr++;
+		switch (*tr)
+		{
 
-			case 'd':
-				i = va_arg(list, int);
-				if (i >= 0)
-					select_leds(i);
-				break;
+		case 'd':
+			i = va_arg(list, int);
+			if (i >= 0)
+				select_leds(i);
+			break;
 
-			default:
-				break;
-			}
+		default:
+			break;
 		}
 	}
+
 	va_end(list);
 }
 
