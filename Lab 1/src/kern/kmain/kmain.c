@@ -47,6 +47,7 @@ void kmain(void)
 	{
 		int a;
 		kscanf("%d", &a);
-		kprintf("%d", a);
+		kprintf("Hello World %d", a);
+		kprintf(1, "%d", a);
 	}
 }

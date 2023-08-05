@@ -44,9 +44,76 @@
  */
 // Simplified version of printf
 
-void kprintf(char *format, ...)
+void kprintf_basic(char *format, ...)
 {
 	// write your code here
+	char *tr;
+	uint32_t i;
+	uint8_t *str;
+	va_list list;
+	double dval;
+	// uint32_t *intval;
+	va_start(list, format);
+	for (tr = format; *tr != '\0'; tr++)
+	{
+		while (*tr != '%' && *tr != '\0')
+		{
+			UART_SendChar(USART2, *tr);
+			tr++;
+		}
+		if (*tr == '\0')
+			break;
+		tr++;
+		switch (*tr)
+		{
+		case 'c':
+			i = va_arg(list, int);
+			UART_SendChar(USART2, i);
+			break;
+		case 'd':
+			i = va_arg(list, int);
+			if (i < 0)
+			{
+				UART_SendChar(USART2, '-');
+				i = -i;
+			}
+			_USART_WRITE(USART2, (uint8_t *)convert(i, 10));
+			break;
+		case 'o':
+			i = va_arg(list, int);
+			if (i < 0)
+			{
+				UART_SendChar(USART2, '-');
+				i = -i;
+			}
+			_USART_WRITE(USART2, (uint8_t *)convert(i, 8));
+			break;
+		case 'x':
+			i = va_arg(list, int);
+			if (i < 0)
+			{
+				UART_SendChar(USART2, '-');
+				i = -i;
+			}
+			_USART_WRITE(USART2, (uint8_t *)convert(i, 16));
+			break;
+		case 's':
+			str = va_arg(list, uint8_t *);
+			_USART_WRITE(USART2, str);
+			break;
+		case 'f':
+			dval = va_arg(list, double);
+			_USART_WRITE(USART2, (uint8_t *)float2str(dval));
+			break;
+		default:
+			break;
+		}
+	}
+	va_end(list);
+}
+
+void kprintf_driver(int driver, char *format, ...)
+{
 	char *tr;
 	uint32_t i;
 	uint8_t *str;

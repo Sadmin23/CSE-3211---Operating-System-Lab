@@ -33,7 +33,13 @@
 #include <stdint.h>
 #include <stdarg.h>
 
-void kprintf(char *, ...);
 void kscanf(char *, ...);
-uint8_t strcomp(uint8_t *, uint8_t *);
+
+#define kprintf(...) _Generic((__VA_ARGS__), \
+    char *: kprintf_basic,                   \
+    int: kprintf_driver)(__VA_ARGS__)
+
+void kprintf_basic(char *format, ...);
+void kprintf_driver(int driver, char *format, ...);
+
 #endif /* KSTDIO */
