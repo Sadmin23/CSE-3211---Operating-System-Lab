@@ -32,6 +32,7 @@
 #include <stm32_peps.h>
 #include <usart.h>
 #include <kstring.h>
+#include "seven_segment.h"
 /**
  * first argument define the type of string to kprintf and kscanf,
  * %c for charater
@@ -42,7 +43,8 @@
  * %f for floating point number
  */
 // Simplified version of printf
-void kprintf(char *format, ...)
+
+void kprintf(int driver, char *format, ...)
 {
 	// write your code here
 	char *tr;
@@ -52,59 +54,30 @@ void kprintf(char *format, ...)
 	double dval;
 	// uint32_t *intval;
 	va_start(list, format);
-	for (tr = format; *tr != '\0'; tr++)
+
+	if (driver == 1)
 	{
-		while (*tr != '%' && *tr != '\0')
+		for (tr = format; *tr != '\0'; tr++)
 		{
-			UART_SendChar(USART2, *tr);
+			while (*tr != '%' && *tr != '\0')
+			{
+				tr++;
+			}
+			if (*tr == '\0')
+				break;
 			tr++;
-		}
-		if (*tr == '\0')
-			break;
-		tr++;
-		switch (*tr)
-		{
-		case 'c':
-			i = va_arg(list, int);
-			UART_SendChar(USART2, i);
-			break;
-		case 'd':
-			i = va_arg(list, int);
-			if (i < 0)
+			switch (*tr)
 			{
-				UART_SendChar(USART2, '-');
-				i = -i;
+
+			case 'd':
+				i = va_arg(list, int);
+				if (i >= 0)
+					select_leds(i);
+				break;
+
+			default:
+				break;
 			}
-			_USART_WRITE(USART2, (uint8_t *)convert(i, 10));
-			break;
-		case 'o':
-			i = va_arg(list, int);
-			if (i < 0)
-			{
-				UART_SendChar(USART2, '-');
-				i = -i;
-			}
-			_USART_WRITE(USART2, (uint8_t *)convert(i, 8));
-			break;
-		case 'x':
-			i = va_arg(list, int);
-			if (i < 0)
-			{
-				UART_SendChar(USART2, '-');
-				i = -i;
-			}
-			_USART_WRITE(USART2, (uint8_t *)convert(i, 16));
-			break;
-		case 's':
-			str = va_arg(list, uint8_t *);
-			_USART_WRITE(USART2, str);
-			break;
-		case 'f':
-			dval = va_arg(list, double);
-			_USART_WRITE(USART2, (uint8_t *)float2str(dval));
-			break;
-		default:
-			break;
 		}
 	}
 	va_end(list);
@@ -117,31 +90,34 @@ void kscanf(char *format, ...)
 	va_list list;
 	char *ptr;
 	uint8_t buff[50];
+	uint8_t *str;
+	int len;
 	ptr = format;
 	va_start(list, format);
 	while (*ptr)
 	{
-		/* code */
 		if (*ptr == '%') // looking for format of an input
 		{
 			ptr++;
 			switch (*ptr)
 			{
-			case /* constant-expression */ 'c': // charater
-				/* code */
+			case 'c': // charater
 				*(uint8_t *)va_arg(list, uint8_t *) = UART_GetChar(USART2);
 				break;
 			case 'd': // integer number
 				_USART_READ_STR(USART2, buff, 50);
 				*(uint32_t *)va_arg(list, uint32_t *) = __str_to_num(buff, 10);
 				break;
-			case 's': // need to update -- string
+			case 's': // string without spaces
 				_USART_READ_STR(USART2, buff, 50);
-				*(uint32_t *)va_arg(list, uint32_t *) = __str_to_num(buff, 10);
+				str = va_arg(list, uint8_t *);
+				len = __strlen(buff);
+				for (int u = 0; u <= len; u++) // copy from buff to user defined char pointer (i.e string)
+					str[u] = buff[u];
 				break;
 			case 'x': // hexadecimal number
 				_USART_READ_STR(USART2, buff, 50);
-				*(uint32_t *)va_arg(list, uint32_t *) = __str_to_num(buff, 16);
+				*(int *)va_arg(list, uint32_t *) = __str_to_num(buff, 16);
 				break;
 			case 'o': // octal number
 				_USART_READ_STR(USART2, buff, 50);
@@ -149,7 +125,8 @@ void kscanf(char *format, ...)
 				break;
 			case 'f': // floating point number
 				_USART_READ_STR(USART2, buff, 50);
-				*(uint32_t *)va_arg(list, double *) = __str_to_num(buff, 10);
+				//*(uint32_t*)va_arg(list,double*) = __str_to_num(buff,10);
+				*(float *)va_arg(list, float *) = str2float(buff); // Works for float but not for double !!!
 				break;
 			default: // rest not recognized
 				break;

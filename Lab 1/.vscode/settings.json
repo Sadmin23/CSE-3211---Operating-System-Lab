@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.ejs": "html",
+        "seven_segment.h": "c"
+    }
+}
