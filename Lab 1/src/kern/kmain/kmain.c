@@ -43,11 +43,13 @@ void kmain(void)
 
 	led_init();
 
+	int x = 1;
+
 	while (1)
 	{
 		int a;
 		kscanf("%d", &a);
-		kprintf("Hello World %d", a);
+		kprintf("Hello World, I took an input\n");
 		kprintf(1, "%d", a);
 	}
 }

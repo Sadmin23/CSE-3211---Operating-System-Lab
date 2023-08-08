@@ -11,6 +11,8 @@ void kprintf_basic(char *format, ...)
     va_list list;
     double dval;
 
+    printf("basic\n");
+
     va_start(list, format);
     for (tr = format; *tr != '\0'; tr++)
     {
@@ -61,13 +63,15 @@ void kprintf_driver(int driver, char *format, ...)
 
     va_end(list);
 }
-/*
 int main(void)
 {
-    kprintf("This is a test message.\n"); // Calls kprintf_basic
+    int x = 25;
+
+    kprintf("Message\n");
+
+    //    kprintf("%d", x); // Calls kprintf_basic
 
     kprintf(1, "%d", 42); // Calls kprintf_driver for driver 1
 
     return 0;
 }
-*/
