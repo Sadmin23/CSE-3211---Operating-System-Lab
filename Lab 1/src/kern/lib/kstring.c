@@ -52,7 +52,7 @@ int __str_to_num(uint8_t *buff, uint8_t base)
 		if (buff[i] >= '0' && buff[i] <= '9')
 		{
 			val = (uint32_t)(buff[i] - '0');
-			// kprintf("%c\n", buff[i]);
+			kprintf("%c\n", buff[i]);
 		}
 		else if (buff[i] >= 'a' && buff[i] <= 'f')
 		{

@@ -34,13 +34,6 @@
 #include <stdarg.h>
 
 void kscanf(char *, ...);
-
-#define kprintf(...) _Generic((__VA_ARGS__), \
-    char *: kprintf_basic,                   \
-    char: kprintf_basic,                     \
-    int: kprintf_driver)(__VA_ARGS__)
-
-void kprintf_basic(char *format, ...);
-void kprintf_driver(int driver, char *format, ...);
+void kprintf(char *format, ...);
 
 #endif /* KSTDIO */
