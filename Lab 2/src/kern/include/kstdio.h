@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022
+ * Copyright (c) 2022 
  * Computer Science and Engineering, University of Dhaka
  * Credit: CSE Batch 25 (starter) and Prof. Mosaddek Tushar
  *
@@ -27,20 +27,17 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
-
+ 
 #ifndef __KSTDIO_H
 #define __KSTDIO_H
+
+
 #include <stdint.h>
 #include <stdarg.h>
 
-void kscanf(char *, ...);
-
-#define kprintf(...) _Generic((__VA_ARGS__), \
-    char *: kprintf_basic,                   \
-    char: kprintf_basic,                     \
-    int: kprintf_driver)(__VA_ARGS__)
-
-void kprintf_basic(char *format, ...);
-void kprintf_driver(int driver, char *format, ...);
-
+void kscanf(char*,...);
+void kprintf_led(int n, char *format, ...);
+void kprintf(char *format, ...);
+uint8_t strcomp(uint8_t *, uint8_t *);
 #endif /* KSTDIO */
+

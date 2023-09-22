@@ -52,6 +52,7 @@ RCC->PLLCFGR = (PLL_M<<0) | (PLL_N<<6) | (PLL_P<<16) | (1<<22);
 //6. Enable PLL and wait for it to become ready
 RCC->CR |= 1<<24;
 //Check if PLL clock is ready
+
 while(!(RCC->CR & 1<<25))
 	; //wait for PLL ready
 //7. Select clock source and wait for it to be set

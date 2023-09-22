@@ -43,9 +43,9 @@ void __sys_init(void)
 	kprintf("\n************************************\r\n");
 	kprintf("Booting DUOS .....\r\n");
 	kprintf("Copyright (c) 2022, Prof. Mosaddek Tushar, CSE, DU\r\n");
+	kprintf("Modified by Md. Sadmin Tahmid Khan(35)\nMd. Saim Ahmmed Utsho(41)\n");
 	kprintf("Credit: Third Year 2022-23\r\n");
 	kprintf("OS Version: 2023.1.0.1\n");
-	kprintf("Modified by Md. Sadmin Tahmid Khan(35) and Md. Saim Ahmmed Utsho(41)\n");
 	kprintf("Welcome ....\r\n");
 	kprintf("*************************************\r\n");
 }

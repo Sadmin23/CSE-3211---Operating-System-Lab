@@ -50,5 +50,6 @@ void kmain(void)
 		int a;
 		kscanf("%d", &a);
 		kprintf("Hello World, I took an input\n");
+		kprintf(1, "%d", a);
 	}
 }

@@ -1,33 +1,3 @@
-/*
- * Copyright (c) 2022
- * Computer Science and Engineering, University of Dhaka
- * Credit: CSE Batch 25 (starter) and Prof. Mosaddek Tushar
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE UNIVERSITY AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE UNIVERSITY OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- */
-
 #include <sys_init.h>
 #include <cm4.h>
 #include <kmain.h>
@@ -35,21 +5,77 @@
 #include <kstring.h>
 #include <stdint.h>
 #include <usart.h>
-#include "seven_segment.h"
+#include <seven_segment.h>
+#include <sys.h>
+#include <test_interrupt.h>
+
+void Exti_Init()
+{
+	RCC->AHB1ENR |= (1 << 0); // Enable GPIOA clock
+
+	GPIOA->PUPDR |= (1 << 0); // Bits (3:2) = 1:0  --> PA1 is in Pull Up mode
+
+	RCC->APB2ENR |= (1 << 14); // Enable SYSCNFG
+
+	SYSCFG->EXTICR[0] &= ~(0xf << 0); // Bits[7:6:5:4] = (0:0:0:0)  -> configure EXTI1 line for PA1
+
+	EXTI->IMR |= (1 << 0); // Bit[1] = 1  --> Disable the Mask on EXTI 1
+
+	EXTI->RTSR &= ~(1 << 0); // Disable Rising Edge Trigger for PA1
+
+	EXTI->FTSR |= (1 << 0); // Enable Falling Edge Trigger for PA1
+
+	__NVIC_SetPriority(EXTI0_IRQn, 5); // Set Priority
+
+	__NVIC_EnableIRQn(EXTI0_IRQn); // Enable Interrupt
+}
 
 void kmain(void)
 {
 	__sys_init();
+	__SysTick_init(100000000);
 
-	led_init();
-
-	int x = 1;
+	Exti_Init();
 
 	while (1)
 	{
-		int a;
-		kscanf("%d", &a);
-		kprintf("Hello World, I took an input\n");
-		kprintf(1, "%d", a);
+		int x;
+		kprintf("\n********************************************\n");
+		kprintf("Enter 0 to restart the System\n");
+		kprintf("Enter 1 to enable hardfault\n");
+		kprintf("Enter 2 to enable Systick Interrupt\n");
+		kprintf("Enter 3 to change Systick priority\n");
+		kprintf("Enter 4 to change Basepri value\n");
+		kprintf("Press Button for External Interrupt\n");
+		kprintf("********************************************\n\n");
+
+		kscanf("%d", &x);
+
+		switch (x)
+		{
+		case 0:
+			kprintf("System Restarting............");
+			SCB->AIRCR = (0x5FA << 16) | (0x4 << 0);
+			break;
+
+		case 1:
+			__asm__("UDF #1");
+			break;
+
+		case 2:
+			SYSTICK->CTRL |= (1 << 1);
+			break;
+
+		case 3:
+			change_systick_priority();
+			break;
+
+		case 4:
+			config_basepri();
+			break;
+
+		default:
+			break;
+		}
 	}
 }

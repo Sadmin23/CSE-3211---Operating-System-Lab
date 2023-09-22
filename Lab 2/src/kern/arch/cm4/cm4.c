@@ -31,7 +31,6 @@
 #include <cm4.h>
 #include <clock.h>
 #include <syscall.h>
-volatile static uint32_t __mscount;
 /************************************************************************************
 * __SysTick_init(uint32_t reload) 
 * Function initialize the SysTick clock. The function with a weak attribute enables 
@@ -44,7 +43,7 @@ __attribute__((weak)) void __SysTick_init(uint32_t reload)
     SYSTICK->VAL =0; // initialize the counter
     __mscount=0;
     SYSTICK->LOAD = PLL_N*reload;
-    SYSTICK->CTRL |= 1<<1 | 1<<2; //enable interrupt and internal clock source
+    SYSTICK->CTRL |= 1<<2; //enable interrupt and internal clock source
     SYSTICK->CTRL|=1<<0; //enable systick counter
 }
 
@@ -91,10 +90,11 @@ __attribute__((weak)) uint32_t __getTime(void)
 {
     return (__mscount+(SYSTICK->LOAD-SYSTICK->VAL)/(PLL_N*1000));
 }
-__attribute__((weak)) void SysTick_Handler()
-{
-    __mscount+=(SYSTICK->LOAD)/(PLL_N*1000);
-}
+// __attribute__((weak)) void SysTick_Handler()
+// {
+//     __mscount+=(SYSTICK->LOAD)/(PLL_N*1000);
+//     kprintf("iiii\n");
+// }
 
 void __enable_fpu()
 {

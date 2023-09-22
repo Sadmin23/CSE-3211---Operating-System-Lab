@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 
+ * Copyright (c) 2022
  * Computer Science and Engineering, University of Dhaka
  * Credit: CSE Batch 25 (starter) and Prof. Mosaddek Tushar
  *
@@ -27,18 +27,32 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
- 
+
 #include <stm32_startup.h>
-void Reset_Handler(void){
+#include <stm32_peps.h>
+#include <kstdio.h>
+#include <sys_init.h>
+#include <cm4.h>
+#include <kmain.h>
+#include <kstring.h>
+#include <stdint.h>
+#include <usart.h>
+#include <seven_segment.h>
+#include <sys.h>
+#include <test_interrupt.h>
+void Reset_Handler(void)
+{
 	uint32_t size = (uint32_t)&_edata - (uint32_t)&_sdata;
-	uint8_t *pDst = (uint8_t*)&_sdata;
-	uint8_t *pSrc = (uint8_t*)&_la_data;
-	for(uint32_t i=0;i<size;i++){
+	uint8_t *pDst = (uint8_t *)&_sdata;
+	uint8_t *pSrc = (uint8_t *)&_la_data;
+	for (uint32_t i = 0; i < size; i++)
+	{
 		*pDst++ = *pSrc++;
 	}
 	size = (uint32_t)&_ebss - (uint32_t)&_sbss;
-	pDst = (uint8_t*)&_sbss;
-	for(uint32_t i=0;i<size;i++){
+	pDst = (uint8_t *)&_sbss;
+	for (uint32_t i = 0; i < size; i++)
+	{
 		*pDst++ = 0;
 	}
 	_text_size = (uint32_t)&_etext - (uint32_t)&_stext;
@@ -46,34 +60,54 @@ void Reset_Handler(void){
 	_bss_size = (uint32_t)&_ebss - (uint32_t)&_sbss;
 	kmain();
 }
-void Default_Handler(void){
-	while(1);
-}
-//2. implement the fault handlers
-void HardFault_Handler(void)
+void Default_Handler(void)
 {
-//	printf("Exception : Hardfault\n");
-	while(1);
 }
 
+void HardFault_Handler(void)
+{
+	kprintf("Starting Hardfault Event......\n");
+	kprintf("Hardfault Exception has been triggered for Undefined Instruction exception\n");
+	kprintf("System Restarting....\n");
+	kprintf("System Restarting............");
+	SCB->AIRCR = (0x5FA << 16) | (0x4 << 0);
+	kprintf("System Restart Failed.\n");
+}
 
 void MemManage_Handler(void)
 {
-//	printf("Exception : MemManage\n");
-	while(1);
+	//	printf("Exception : MemManage\n");
+	while (1)
+		;
 }
 
 void BusFault_Handler(void)
 {
-//	printf("Exception : BusFault\n");
-	while(1);
+	//	printf("Exception : BusFault\n");
+	while (1)
+		;
 }
 
-void SVCall_Handler(void){
-/* Write code for SVC handler */
-/* the handler function evntually call syscall function with a call number */
+int counter = 0;
 
-
+void SysTick_Handler(void)
+{
+	kprintf("\n**********\nSystick Exception has been enabled\n");
+	SYSTICK->CTRL &= ~(1 << 1);
 }
+void SVCall_Handler(void)
+{
+	/* Write code for SVC handler */
+	/* the handler function evntually call syscall function with a call number */
+}
+void EXTI0_Handler(void)
+{
+	if (EXTI->PR & (1 << 0)) // If the PA1 triggered the interrupt
+	{
+		EXTI->PR |= (1 << 0); // Clear the interrupt flag by writing a 1
 
+		counter++;
 
+		kprintf("Counter value increased to: %d\n", counter);
+	}
+}

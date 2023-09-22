@@ -37,7 +37,7 @@
 #define SRAM_END ((SRAM_START)+(SRAM_SIZE))
 #define STACK_START SRAM_END
 
-int kmain(void);
+void kmain(void);
 
 extern uint32_t _stext;
 extern uint32_t _etext;
@@ -67,8 +67,8 @@ void TAMP_STAMP_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void RTC_WKUP_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void FLASH_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void RCC_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void EXTI0_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void EXTI1_Handler(void) __attribute__((weak, alias("Default_Handler")));
+void EXTI0_Handler(void) __attribute__((weak));
+void EXTI1_Handler(void) __attribute__((weak));
 void EXTI2_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void EXTI3_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void EXTI4_Handler(void) __attribute__((weak, alias("Default_Handler")));
@@ -262,7 +262,6 @@ uint32_t NVIC_VECTOR[] __attribute__((section (".isr_vector")))={
 	(uint32_t) &FMPI2C1_Handler,
 	(uint32_t) &FMPI2C1_ERR_Handler
 };
-void update_global_tick_count(void);
 #endif
 
 
