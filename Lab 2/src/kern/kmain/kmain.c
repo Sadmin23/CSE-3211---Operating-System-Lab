@@ -21,9 +21,9 @@ void Exti_Init()
 
 	EXTI->IMR |= (1 << 0); // Bit[1] = 1  --> Disable the Mask on EXTI 1
 
-	EXTI->RTSR &= ~(1 << 0); // Disable Rising Edge Trigger for PA1
+	EXTI->RTSR &= ~(1 << 0); // Disable Rising Edge Trigger for PA0
 
-	EXTI->FTSR |= (1 << 0); // Enable Falling Edge Trigger for PA1
+	EXTI->FTSR |= (1 << 0); // Enable Falling Edge Trigger for PA0
 
 	__NVIC_SetPriority(EXTI0_IRQn, 5); // Set Priority
 
@@ -43,9 +43,7 @@ void kmain(void)
 		kprintf("\n********************************************\n");
 		kprintf("Enter 0 to restart the System\n");
 		kprintf("Enter 1 to enable hardfault\n");
-		kprintf("Enter 2 to enable Systick Interrupt\n");
-		kprintf("Enter 3 to change Systick priority\n");
-		kprintf("Enter 4 to change Basepri value\n");
+		kprintf("Enter 2 to Change Basepri value\n");
 		kprintf("Press Button for External Interrupt\n");
 		kprintf("********************************************\n\n");
 
@@ -57,20 +55,10 @@ void kmain(void)
 			kprintf("System Restarting............");
 			SCB->AIRCR = (0x5FA << 16) | (0x4 << 0);
 			break;
-
 		case 1:
 			__asm__("UDF #1");
 			break;
-
 		case 2:
-			SYSTICK->CTRL |= (1 << 1);
-			break;
-
-		case 3:
-			change_systick_priority();
-			break;
-
-		case 4:
 			config_basepri();
 			break;
 

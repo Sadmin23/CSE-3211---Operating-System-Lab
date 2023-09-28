@@ -23,7 +23,7 @@ void task_start(void) {
 }
 
 void initialize_queue(void) {
-    rq.max = 5;
+    rq.max = 22;
     rq.size = 0;
     rq.st = 0;
     rq.ed = -1;    
@@ -87,6 +87,7 @@ void task_create(TCB_TypeDef *tcb, void (*task_func)(void), uint32_t *stack) {
     // initializing registers r11 to r4
     for(int i = 0; i < 8; i++) {
         if(i == 0) {
+            // pushing reference of own task in r4
             *(--tcb->psp) = (uint32_t) tcb;
         } else {
             *(--tcb->psp) = 0x0000000;

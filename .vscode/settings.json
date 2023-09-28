@@ -1,0 +1,10 @@
+{
+  "files.associations": {
+    "*.ejs": "html",
+    "limits": "c",
+    "usart.h": "c",
+    "syscall.h": "c",
+    "schedule.h": "c",
+    "types.h": "c"
+  }
+}
