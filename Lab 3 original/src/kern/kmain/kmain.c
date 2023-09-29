@@ -30,7 +30,7 @@
 
 #include <kmain.h>
 #include <schedule.h>
-#define STOP 10000000
+#define STOP 1000000
 
 TCB_TypeDef task[22], _sleep;
 int global_count = 0;
@@ -126,6 +126,10 @@ void kmain(void)
     unprivileged_mode();
     // set pendsv before starting task
     set_task_pending(1);
+
+    int lol = fopen(5, 7);
+
+    kprintf("%d\n", lol);
 
     task_start();
     uprintf("\n\r\tAll Tasks Done!!!\n\r");

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 
+ * Copyright (c) 2022
  * Computer Science and Engineering, University of Dhaka
  * Credit: CSE Batch 25 (starter) and Prof. Mosaddek Tushar
  *
@@ -38,25 +38,25 @@
 #include <unistd.h>
 #include <schedule.h>
 
-
-#define MAX_TASKS   5
+#define MAX_TASKS 30
 
 /* some stack memory calculations */
-#define SIZE_TASK_STACK          1024U
-#define SIZE_SCHED_STACK         1024U
+#define SIZE_TASK_STACK 1024U
+#define SIZE_SCHED_STACK 1024U
 
-#define SRAM_START               0x20000000U
-#define SIZE_SRAM                ( (128) * (1024))
-#define SRAM_END                 ((SRAM_START) + (SIZE_SRAM) )
+#define SRAM_START 0x20000000U
+#define SIZE_SRAM ((128) * (1024))
+#define SRAM_END ((SRAM_START) + (SIZE_SRAM))
 
-#define KERNEL_STACK_START       SRAM_END // main stack
-#define KERNEL_STACK_SIZE        ( (4) * (1024) ) // 4KB
-#define KERNEL_STACK_END         ( (KERNEL_STACK_START) - (KERNEL_STACK_SIZE) ) 
+#define KERNEL_STACK_START SRAM_END      // main stack
+#define KERNEL_STACK_SIZE ((4) * (1024)) // 4KB
+#define KERNEL_STACK_END ((KERNEL_STACK_START) - (KERNEL_STACK_SIZE))
 
-#define TASK_STACK_START         KERNEL_STACK_END
-#define TASK_STACK_SIZE          ( (1) * (1024) ) // 1KB
+#define TASK_STACK_START KERNEL_STACK_END
+#define TASK_STACK_SIZE ((1) * (1024)) // 1KB
 
-
+#define FILE_STACK_START TASK_STACK_START - ((MAX_TASKS)*TASK_STACK_SIZE)
+#define FILE_STACK_SIZE ((1) * (1024)) // 1KB
 
 // /*
 // #define T1_STACK_START           SRAM_END
@@ -69,18 +69,26 @@
 
 #define TICK_HZ 1000U
 
-#define HSI_CLOCK         		16000000U
-#define SYSTICK_TIM_CLK   		HSI_CLOCK
+#define HSI_CLOCK 16000000U
+#define SYSTICK_TIM_CLK HSI_CLOCK
 
+#define DUMMY_XPSR 0x01000000U
 
-#define DUMMY_XPSR  0x01000000U
+#define TASK_READY_STATE 0x00
+#define TASK_BLOCKED_STATE 0XFF
 
-#define TASK_READY_STATE  0x00
-#define TASK_BLOCKED_STATE  0XFF
+#define INTERRUPT_DISABLE()             \
+    do                                  \
+    {                                   \
+        __asm volatile("MOV R0,#0x1");  \
+        asm volatile("MSR PRIMASK,R0"); \
+    } while (0)
 
-#define INTERRUPT_DISABLE()  do{__asm volatile ("MOV R0,#0x1"); asm volatile("MSR PRIMASK,R0"); } while(0)
-
-#define INTERRUPT_ENABLE()  do{__asm volatile ("MOV R0,#0x0"); asm volatile("MSR PRIMASK,R0"); } while(0)
+#define INTERRUPT_ENABLE()              \
+    do                                  \
+    {                                   \
+        __asm volatile("MOV R0,#0x0");  \
+        asm volatile("MSR PRIMASK,R0"); \
+    } while (0)
 
 #endif /* KMAIN_H */
-

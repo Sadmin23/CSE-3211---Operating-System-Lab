@@ -67,6 +67,15 @@ int write(uint32_t fd, unsigned char *s, size_t len) {
     return ret;
 }
 
+int fopen(uint32_t s, uint32_t fd){
+    int ret;
+    __asm volatile ("MOV R1, %0" : : "r" (s));
+    __asm volatile ("MOV R2, %0" : : "r" (fd));
+    __asm volatile ("MOV R12, %0" : : "r" (&ret));
+    __asm volatile("SVC #45");
+    return ret;
+}
+
 int get_time(void) {
     unsigned int time = 0;
     __asm volatile ("MOV R1, %0" : : "r" (&time));

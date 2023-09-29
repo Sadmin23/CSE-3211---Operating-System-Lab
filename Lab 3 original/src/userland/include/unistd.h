@@ -47,6 +47,8 @@ int uprintf(char *format, ...);
 int read(uint32_t fd, unsigned char *s, size_t len);
 int uscanf(char *format, ...);
 
+int fopen(uint32_t s, uint32_t fd);
+
 void reboot(void);
 int get_time(void);
 void exit(void);

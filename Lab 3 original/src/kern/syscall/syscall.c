@@ -96,6 +96,16 @@ void __sys_write(void) {
     return;
 }
 
+void __sys_open(void) {
+    // unsigned char *s;
+    unsigned int * svc_args;
+    __asm volatile ("MOV %0, R1" : "=r" (svc_args) : );
+    int s = (int)svc_args[1]; //R1
+    int fd = (int)svc_args[2]; //R2
+    *((int*)svc_args[4]) = fd+1;
+    return;
+}
+
 void __sys_gettime(void) {
     unsigned int * svc_args;
     __asm volatile ("MOV %0, R1" : "=r" (svc_args) : );
@@ -123,6 +133,9 @@ void syscall(uint16_t callno) {
             break;
         case SYS_write:
             __sys_write();
+            break;
+        case SYS_open:
+            __sys_open();
             break;
         case SYS_reboot:
             __sys_reboot();
