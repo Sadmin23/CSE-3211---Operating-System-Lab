@@ -105,7 +105,7 @@ void __sys_open(void) {
 
     kprintf("%s", s);
 
-    *((int*)svc_args[4]) = fd+1;
+    *((int*)svc_args[4]) = add_file(fd);
     return;
 }
 
