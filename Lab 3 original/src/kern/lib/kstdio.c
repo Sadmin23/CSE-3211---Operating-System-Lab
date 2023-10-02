@@ -155,3 +155,7 @@ void kscanf(char *format,...)
 	va_end(list);
 }
 
+void add_directory(){
+	
+}
+

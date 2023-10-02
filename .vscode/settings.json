@@ -9,6 +9,7 @@
     "kstdio.h": "c",
     "errmsg.h": "c",
     "errno.h": "c",
-    "cm4.h": "c"
+    "cm4.h": "c",
+    "kstring.h": "c"
   }
 }

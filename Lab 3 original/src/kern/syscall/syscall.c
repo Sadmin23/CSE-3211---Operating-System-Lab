@@ -97,11 +97,14 @@ void __sys_write(void) {
 }
 
 void __sys_open(void) {
-    // unsigned char *s;
+    unsigned char *s;
     unsigned int * svc_args;
     __asm volatile ("MOV %0, R1" : "=r" (svc_args) : );
-    int s = (int)svc_args[1]; //R1
+    s = (unsigned char *)svc_args[1]; //R1
     int fd = (int)svc_args[2]; //R2
+
+    kprintf("%s", s);
+
     *((int*)svc_args[4]) = fd+1;
     return;
 }

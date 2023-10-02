@@ -220,6 +220,13 @@ void __enable_fault_irq(void);           //Enable all interrupt including FaultM
 void __disable_fault_irq(void);          //Disable or prevent all interrupt including FaultMask
 uint32_t __get_FAULTMASK(void);          //Return the status of the masking value of FaultMask register
 
+typedef struct dev_t
+{
+  char name[32]; // Device name or symbol
+  uint32_t t_ref; //Number of open count
+  uint8_t t_access; //open type O_RDONLY, O_WRDONLY, O_APPEND
+  uint32_t *op_addr; //Address of the datastructure operations
+} dev_table;
 
 typedef struct
 {

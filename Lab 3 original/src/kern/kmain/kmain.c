@@ -127,9 +127,9 @@ void kmain(void)
     // set pendsv before starting task
     set_task_pending(1);
 
-    int lol = fopen(5, 7);
+    int lol = fopen("S_DISPLAY", 7);
 
-    kprintf("%d\n", lol);
+    kprintf(" %d\n", lol);
 
     task_start();
     uprintf("\n\r\tAll Tasks Done!!!\n\r");
