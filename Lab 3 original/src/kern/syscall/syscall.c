@@ -49,7 +49,7 @@ int kfopen(unsigned char *s, int fd)
         {
             // kprintf("Device already open.\n");
             directory[i].t_ref++;
-            return 64;
+            return i;
         }
     }
 
@@ -169,6 +169,7 @@ void __sys_open(void)
     int fd = (int)svc_args[2];        // R2
 
     *((int *)svc_args[4]) = kfopen(s, fd);
+    
     return;
 }
 

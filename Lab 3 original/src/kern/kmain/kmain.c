@@ -49,7 +49,7 @@ void task_sleep(void)
         ;
 }
 
-void task1(void)
+void Task(void)
 {
     uint32_t value;
     uint32_t inc_count = 0;
@@ -78,9 +78,14 @@ void task1(void)
         {
             /* display how many increments it has successfully done!! */
             uprintf("Total increment done by task %d is: %d\n\r", task_id, inc_count);
-            int fd = fopen("S_DISPLAY", 2);
             uprintf("Total increment done by task is: %d\n\r", inc_count);
             /* above is an SVC call */
+            int fd = fopen("S_DISPLAY", 2);
+
+            int x = 10;
+
+            fprintf(fd, "%d\n", x);
+
             break;
         }
     }
@@ -109,18 +114,18 @@ void kmain(void)
     __sys_init();
     __set_interrupt_priorities();
 
-    int tc = 20;
+    int task_count = 20;
 
-    for (int i = 0; i < tc; i++)
+    for (int i = 0; i < task_count; i++)
     {
-        task_create(task + i, task1, (uint32_t *)(TASK_STACK_START - (i * TASK_STACK_SIZE)));
+        task_create(task + i, Task, (uint32_t *)(TASK_STACK_START - (i * TASK_STACK_SIZE)));
     }
 
-    task_create(&_sleep, task_sleep, (uint32_t *)(TASK_STACK_START - (tc * TASK_STACK_SIZE)));
+    task_create(&_sleep, task_sleep, (uint32_t *)(TASK_STACK_START - (task_count * TASK_STACK_SIZE)));
 
     initialize_queue();
 
-    for (int i = 0; i < tc; i++)
+    for (int i = 0; i < task_count; i++)
         add_to_ready_queue(task + i);
     set_sleeping_task(&_sleep);
 
@@ -129,14 +134,18 @@ void kmain(void)
     // set pendsv before starting task
     set_task_pending(1);
 
-    int lol = fopen("S_DISPLAY", 7);
+    // int lol = fopen("S_DISPLAY", 7);
 
-    fprintf("Hello\n");
+    // int x = 10;
+
+    // fprintf(5, "%d\n", x);
 
     // getfile();
 
     task_start();
     uprintf("\n\r\tAll Tasks Done!!!\n\r");
+
+    getfile();
 
     while (1)
         ;

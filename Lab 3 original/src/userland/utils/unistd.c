@@ -291,7 +291,7 @@ int uscanf(char *format, ...)
     return conversion_count;
 }
 
-int fprintf(char *format, ...)
+int fprintf(int fd, char *format, ...)
 {
     char *tr;
     uint32_t i;
@@ -299,10 +299,24 @@ int fprintf(char *format, ...)
     va_list list;
     double dval;
     va_start(list, format);
-    unsigned char result[256];
+    unsigned char result[512];
     int index = 0;
 
-    result[index++] = (uint8_t)'f';
+    char x = '0' + fd;
+
+    // char starting[30] = "Printing in file no. ";
+
+    // for (int i=0; i<21; i++)
+    //     result[index++] = (uint8_t)starting[i];
+
+    result[index++] = (uint8_t)'F';
+    result[index++] = (uint8_t)'I';
+    result[index++] = (uint8_t)'L';
+    result[index++] = (uint8_t)'E';
+    result[index++] = (uint8_t)' ';
+    result[index++] = (uint8_t)'#';
+    result[index++] = (uint8_t)(x);
+    result[index++] = (uint8_t)':';
     result[index++] = (uint8_t)' ';
 
     for (tr = format; *tr != '\0'; tr++)
