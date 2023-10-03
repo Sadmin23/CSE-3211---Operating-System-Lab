@@ -329,8 +329,3 @@ uint32_t __get_BASEPRI(void)
                    : "=r"(result));
     return (result >> 4);
 }
-
-int add_file(int fd)
-{
-    return fd + 1;
-}

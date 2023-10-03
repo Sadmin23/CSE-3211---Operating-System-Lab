@@ -38,6 +38,8 @@
 #define SYSTICK ((SYSTICK_TypeDef *)0xE000E010)
 #define NVIC ((NVIC_TypeDef *)0xE000E100)
 #define SCB ((SCB_TypeDef *)0xE000ED00)
+
+#define STARTING_ADDRESS 10000
 /*
  * Data structure for SCB
  */
@@ -221,21 +223,6 @@ void __disable_fault_irq(void);           // Disable or prevent all interrupt in
 uint32_t __get_FAULTMASK(void);           // Return the status of the masking value of FaultMask register
 
 #define STARTING_ADDRESS 10000
-
-typedef struct dev_t
-{
-  char name[32]; // Device name or symbol
-  int t_ref;     // Number of open count
-  int t_access;  // open type O_RDONLY, O_WRDONLY, O_APPEND
-  int *op_addr;  // Address of the datastructure operations
-} dev_table;
-
-enum access_type
-{
-  O_RDONLY,  // 0
-  O_WRDONLY, // 1
-  O_APPEND   // 2
-};
 
 typedef struct
 {
