@@ -42,6 +42,5 @@ void __sys_open(void);
 void __sys_gettime(void);
 void __sys_reboot(void);
 void __sys_yield(void);
-void printDirectory(void);
 
 #endif

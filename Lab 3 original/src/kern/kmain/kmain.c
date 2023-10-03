@@ -85,6 +85,7 @@ void Task(void)
             int x = 10;
 
             fprintf(fd, "%d\n", x);
+            x = (x + 1) % 8;
 
             break;
         }
@@ -134,18 +135,8 @@ void kmain(void)
     // set pendsv before starting task
     set_task_pending(1);
 
-    // int lol = fopen("S_DISPLAY", 7);
-
-    // int x = 10;
-
-    // fprintf(5, "%d\n", x);
-
-    // getfile();
-
     task_start();
     uprintf("\n\r\tAll Tasks Done!!!\n\r");
-
-    getfile();
 
     while (1)
         ;

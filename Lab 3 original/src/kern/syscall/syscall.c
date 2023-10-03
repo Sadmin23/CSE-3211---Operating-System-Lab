@@ -47,14 +47,14 @@ int kfopen(unsigned char *s, int fd)
     {
         if (kstrcmp(directory[i].name, s) == 0)
         {
-            // kprintf("Device already open.\n");
+            kprintf("Device already open.\n");
             directory[i].t_ref++;
             return i;
         }
     }
 
     dev_table entry;
-    //    kprintf("Opening a new device...\n");
+    kprintf("Opening a new device...\n");
     kstrcpy(entry.name, s);
     entry.t_access = fd;
     entry.t_ref = 1;
@@ -169,7 +169,7 @@ void __sys_open(void)
     int fd = (int)svc_args[2];        // R2
 
     *((int *)svc_args[4]) = kfopen(s, fd);
-    
+    printDirectory();
     return;
 }
 
@@ -194,11 +194,6 @@ void __sys_reboot(void)
 void __sys_yield(void)
 {
     SCB->ICSR |= (1 << 28);
-}
-
-void __sys_getdirentry(void)
-{
-    printDirectory();
 }
 
 void syscall(uint16_t callno)
@@ -231,9 +226,6 @@ void syscall(uint16_t callno)
         break;
     case SYS_yield:
         __sys_yield();
-        break;
-    case SYS_getdirentry:
-        printDirectory();
         break;
     case SYS_start_task:
         __sys_start_task();

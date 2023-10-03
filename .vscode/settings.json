@@ -12,6 +12,7 @@
     "cm4.h": "c",
     "kstring.h": "c",
     "typeinfo": "c",
-    "cstdio": "c"
+    "cstdio": "c",
+    "kmain.h": "c"
   }
 }

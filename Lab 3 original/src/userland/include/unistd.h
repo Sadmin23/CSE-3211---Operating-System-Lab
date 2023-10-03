@@ -54,8 +54,6 @@ int get_time(void);
 void exit(void);
 void yield(void);
 
-void getfile(void);
-
 int fprintf(int fd, char *format, ...);
 
 uint16_t getpid(void);

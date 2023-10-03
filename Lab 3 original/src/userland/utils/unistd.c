@@ -50,11 +50,6 @@ uint16_t getpid(void)
     return pid;
 }
 
-void getfile(void)
-{
-    __asm volatile("SVC #54");
-}
-
 // attempts to read up to len bytes, returns the number of bytes read
 int read(uint32_t fd, unsigned char *s, size_t len)
 {
@@ -302,22 +297,7 @@ int fprintf(int fd, char *format, ...)
     unsigned char result[512];
     int index = 0;
 
-    char x = '0' + fd;
-
-    // char starting[30] = "Printing in file no. ";
-
-    // for (int i=0; i<21; i++)
-    //     result[index++] = (uint8_t)starting[i];
-
-    result[index++] = (uint8_t)'F';
-    result[index++] = (uint8_t)'I';
-    result[index++] = (uint8_t)'L';
-    result[index++] = (uint8_t)'E';
-    result[index++] = (uint8_t)' ';
-    result[index++] = (uint8_t)'#';
-    result[index++] = (uint8_t)(x);
-    result[index++] = (uint8_t)':';
-    result[index++] = (uint8_t)' ';
+    kprintf("Printing in device #%d:\n", fd);
 
     for (tr = format; *tr != '\0'; tr++)
     {
