@@ -36,6 +36,7 @@
 #include <usart.h>
 #include <cm4.h>
 #include <types.h>
+#include <kmain.h>
 
 dev_table directory[64];
 
@@ -47,23 +48,29 @@ int kfopen(unsigned char *s, int fd)
     {
         if (kstrcmp(directory[i].name, s) == 0)
         {
-            kprintf("Device already open.\n");
+            // kprintf("Device already open.\n");
             directory[i].t_ref++;
             return i;
         }
     }
 
     dev_table entry;
-    kprintf("Opening a new device...\n");
+    // kprintf("Opening a new device...\n");
     kstrcpy(entry.name, s);
     entry.t_access = fd;
     entry.t_ref = 1;
-    entry.op_addr = (STARTING_ADDRESS + current_index * 4);
+    entry.op_addr = (uint32_t *)(DEVICE_STACK_START-(current_index*DEVICE_STACK_SIZE));
 
     directory[current_index] = entry;
     current_index++;
 
     return current_index - 1;
+}
+
+void kclose(int fd)
+{
+    directory[fd].t_ref = 0;
+    kprintf("Closing file");
 }
 
 void printDirectory()
@@ -73,11 +80,11 @@ void printDirectory()
         if (directory[i].t_ref != 0)
         {
             kprintf("----------------------------\n");
-            kprintf("Device %d:\n", i + 1);
+            kprintf("Device %d:\n", i);
             kprintf("Name: %s\n", directory[i].name);
             kprintf("t_ref: %d\n", directory[i].t_ref);
             kprintf("t_access: %d\n", directory[i].t_access);
-            kprintf("op_addr: %d\n", directory[i].op_addr);
+            kprintf("op_addr: %x\n", directory[i].op_addr);
             kprintf("----------------------------\n");
         }
     }
@@ -173,6 +180,19 @@ void __sys_open(void)
     return;
 }
 
+void __sys_close(void)
+{
+    unsigned int *svc_args;
+    __asm volatile("MOV %0, R1"
+                   : "=r"(svc_args)
+                   :);
+    int fd = (int)svc_args[1]; // R1
+
+    kclose(fd);
+    printDirectory();
+    return;
+}
+
 void __sys_gettime(void)
 {
     unsigned int *svc_args;
@@ -226,6 +246,9 @@ void syscall(uint16_t callno)
         break;
     case SYS_yield:
         __sys_yield();
+        break;
+    case SYS_close:
+        __sys_close();
         break;
     case SYS_start_task:
         __sys_start_task();

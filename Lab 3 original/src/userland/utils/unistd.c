@@ -105,6 +105,19 @@ int fopen(unsigned char *s, uint32_t fd)
     return ret;
 }
 
+int fclose(uint32_t fd)
+{
+    int ret;
+    __asm volatile("MOV R1, %0"
+                   :
+                   : "r"(fd));
+    __asm volatile("MOV R12, %0"
+                   :
+                   : "r"(&ret));
+    __asm volatile("SVC #49");
+    return ret;
+}
+
 int get_time(void)
 {
     unsigned int time = 0;
@@ -125,7 +138,7 @@ void yield(void)
     __asm volatile("SVC #120");
 }
 
-int uprintf(char *format, ...)
+int printf(char *format, ...)
 {
     char *tr;
     uint32_t i;

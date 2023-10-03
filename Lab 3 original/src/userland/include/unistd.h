@@ -42,12 +42,13 @@
 
 
 int write(uint32_t fd, unsigned char *s, size_t len);
-int uprintf(char *format, ...);
+int printf(char *format, ...);
 
 int read(uint32_t fd, unsigned char *s, size_t len);
 int uscanf(char *format, ...);
 
 int fopen(unsigned char *s, uint32_t fd);
+int fclose(uint32_t fd);
 
 void reboot(void);
 int get_time(void);

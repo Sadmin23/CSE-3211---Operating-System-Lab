@@ -39,6 +39,7 @@ void __sys_exit(void);
 void __sys_read(void);
 void __sys_write(void);
 void __sys_open(void);
+void __sys_close(void);
 void __sys_gettime(void);
 void __sys_reboot(void);
 void __sys_yield(void);

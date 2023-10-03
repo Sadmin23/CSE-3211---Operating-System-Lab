@@ -34,17 +34,19 @@
 #define STOP 1000000
 
 TCB_TypeDef task[22], _sleep;
-int global_count = 0;
+int count = 0;
+
+int x = 10;
 
 void task_sleep(void)
 {
     int reboot_ = 0;
-    uprintf("\n\r\n\rAll tasks has been completed.\n\r\n\r\tEnter 1 to reboot the system. \n\r\tEnter any other number to enter sleeping mode.\n\r");
+    printf("\n\r\n\rAll tasks has been completed.\n\r\n\r\tEnter 1 to reboot the system. \n\r\tEnter any other number to enter sleeping mode.\n\r");
     uscanf("%d", &reboot_);
     if (reboot_ == 1)
         reboot();
 
-    uprintf("Entering sleep mode...\n\r");
+    printf("Entering sleep mode...\n\r");
     while (1)
         ;
 }
@@ -58,34 +60,33 @@ void Task(void)
         uint16_t task_id = getpid() - 1000; /* It is an SVC call*/
 
         // critical region
-        value = global_count;
+        value = count;
         value++;
 
         // we check if some other tasks increase the count
-        if (value != global_count + 1)
+        if (value != count + 1)
         {
-            uprintf("Task %d running", task_id);
-            uprintf("Error %d != %d\n\r", value, global_count + 1); /* It is an SVC call*/
+            printf("Task %d running", task_id);
+            printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
         }
         else
         {
             // critical region
-            // uprintf("Task %d running No Error %d == %d\n\r", task_id, value, global_count + 1); /* It is an SVC call*/
-            global_count = value;
+            // printf("Task %d running No Error %d == %d\n\r", task_id, value, count + 1); /* It is an SVC call*/
+            count = value;
             inc_count++;
         }
-        if (global_count >= STOP)
+        if (count >= STOP)
         {
             /* display how many increments it has successfully done!! */
-            uprintf("Total increment done by task %d is: %d\n\r", task_id, inc_count);
-            uprintf("Total increment done by task is: %d\n\r", inc_count);
+            printf("Total increment done by task %d is: %d\n\r", task_id, inc_count);
+            printf("Total increment done by task is: %d\n\r", inc_count);
             /* above is an SVC call */
-            int fd = fopen("S_DISPLAY", 2);
-
-            int x = 10;
+            int fd = fopen("S_DISPLAY", O_WRDONLY);
 
             fprintf(fd, "%d\n", x);
             x = (x + 1) % 8;
+            fclose(fd);
 
             break;
         }
@@ -115,6 +116,10 @@ void kmain(void)
     __sys_init();
     __set_interrupt_priorities();
 
+    fopen("STDIN FILENO", O_RDONLY);
+    fopen("STDOUT FILENO", O_RDONLY);
+    fopen("STDERR FILENO", O_RDONLY);
+
     int task_count = 20;
 
     for (int i = 0; i < task_count; i++)
@@ -136,7 +141,7 @@ void kmain(void)
     set_task_pending(1);
 
     task_start();
-    uprintf("\n\r\tAll Tasks Done!!!\n\r");
+    printf("\n\r\tAll Tasks Done!!!\n\r");
 
     while (1)
         ;

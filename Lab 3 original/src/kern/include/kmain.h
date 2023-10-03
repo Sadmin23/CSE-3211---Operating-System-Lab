@@ -38,6 +38,12 @@
 #include <unistd.h>
 #include <schedule.h>
 
+#define O_RDONLY 1
+#define O_WRDONLY 2
+#define O_APPEND 3
+
+
+
 #define MAX_TASKS 30
 
 /* some stack memory calculations */
@@ -55,8 +61,8 @@
 #define TASK_STACK_START KERNEL_STACK_END
 #define TASK_STACK_SIZE ((1) * (1024)) // 1KB
 
-#define FILE_STACK_START TASK_STACK_START - ((MAX_TASKS)*TASK_STACK_SIZE)
-#define FILE_STACK_SIZE ((1) * (1024)) // 1KB
+#define DEVICE_STACK_START TASK_STACK_START - ((MAX_TASKS)*TASK_STACK_SIZE)
+#define DEVICE_STACK_SIZE ((1) * (1024)) // 1KB
 
 // /*
 // #define T1_STACK_START           SRAM_END
