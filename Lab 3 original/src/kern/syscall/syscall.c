@@ -48,12 +48,13 @@ int kfopen(unsigned char *s, int fd)
         if (kstrcmp(directory[i].name, s) == 0)
         {
             // kprintf("Device already open.\n");
-            return i;
+            directory[i].t_ref++;
+            return 64;
         }
     }
 
     dev_table entry;
-    //    kprintf("Opening a new device...\n", s);
+    //    kprintf("Opening a new device...\n");
     kstrcpy(entry.name, s);
     entry.t_access = fd;
     entry.t_ref = 1;
@@ -150,7 +151,7 @@ void __sys_open(void)
     s = (unsigned char *)svc_args[1]; // R1
     int fd = (int)svc_args[2];        // R2
 
-    kprintf("%s", s);
+    //    kprintf("%s", s);
 
     *((int *)svc_args[4]) = kfopen(s, fd);
     return;

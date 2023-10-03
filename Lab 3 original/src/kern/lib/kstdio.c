@@ -155,10 +155,6 @@ void kscanf(char *format,...)
 	va_end(list);
 }
 
-void add_directory(){
-	
-}
-
 char* kstrcpy(char* destination, unsigned char* source) {
     // Copy characters from source to destination until '\0' (null character) is encountered
     while (*source != '\0') {

@@ -10,6 +10,7 @@
     "errmsg.h": "c",
     "errno.h": "c",
     "cm4.h": "c",
-    "kstring.h": "c"
+    "kstring.h": "c",
+    "typeinfo": "c"
   }
 }
