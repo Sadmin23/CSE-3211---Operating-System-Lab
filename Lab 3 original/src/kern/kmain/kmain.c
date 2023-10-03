@@ -58,11 +58,9 @@ void Task(void)
     {
         uint16_t task_id = getpid() - 1000; /* It is an SVC call*/
 
-        // critical region
         value = count;
         value++;
 
-        // we check if some other tasks increase the count
         if (value != count + 1)
         {
             printf("Task %d running", task_id);
@@ -70,14 +68,12 @@ void Task(void)
         }
         else
         {
-            // critical region
             // printf("Task %d running No Error %d == %d\n\r", task_id, value, count + 1); /* It is an SVC call*/
             count = value;
             inc_count++;
         }
         if (count >= STOP)
         {
-            /* display how many increments it has successfully done!! */
             printf("Total increment done by task %d is: %d\n\r", task_id, inc_count);
             printf("Total increment done by task is: %d\n\r", inc_count);
             /* above is an SVC call */

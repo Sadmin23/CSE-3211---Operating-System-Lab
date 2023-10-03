@@ -65,7 +65,7 @@ LOAD object/unistd.o
                 0x08000ddc                is_queue_empty
                 0x08000df4                generate_task_id
                 0x08000e14                task_create
-                0x08000f24                _schedule
+                0x08000f24                context_switch
                 0x08000f68                PendSV_Handler
  .text          0x08000fac       0x98 object/sys_init.o
                 0x08000fac                __sys_init

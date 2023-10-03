@@ -95,7 +95,7 @@ void task_create(TCB_TypeDef *tcb, void (*task_func)(void), uint32_t *stack) {
     }
 }
 
-void _schedule(void) {
+void context_switch(void) {
     if(current->status == RUNNING) {
         current->status = READY;
         add_to_ready_queue(current);
@@ -118,7 +118,7 @@ void __attribute__((naked)) PendSV_Handler(void) {
     // Save current psp value
     __asm volatile ("MOV %0, R0": "=r"( current->psp ): );
 
-    _schedule();
+    context_switch();
 
     // Get new task psp value
     __asm volatile ("MOV R0, %0" : : "r"(current->psp));

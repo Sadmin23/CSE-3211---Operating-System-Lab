@@ -222,7 +222,6 @@ void syscall(uint16_t callno)
     /* Take care of return value or code */
     switch (callno)
     {
-    /* Write your code to call actual function (kunistd.h/c or times.h/c and handle the return value(s) */
     case SYS_read:
         __sys_read();
         break;
