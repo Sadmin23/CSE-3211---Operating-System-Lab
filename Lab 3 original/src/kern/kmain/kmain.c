@@ -130,7 +130,7 @@ void kmain(void)
 
     // int lol = fopen("S_DISPLAY", 7);
 
-    // kprintf(" %d\n", lol);
+    fprintf("Hello\n");
 
     task_start();
     uprintf("\n\r\tAll Tasks Done!!!\n\r");
