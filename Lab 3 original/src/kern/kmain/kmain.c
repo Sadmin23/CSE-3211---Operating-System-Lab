@@ -41,13 +41,12 @@ int x = 10;
 void task_sleep(void)
 {
     int reboot_ = 0;
-    printf("\n\r\n\rAll tasks has been completed.\n\r\n\r\tEnter 1 to reboot the system. \n\r\tEnter any other number to enter sleeping mode.\n\r");
+    printf("\nAll tasks has been completed.\nENTER 1 TO REBOOT DUOS. \nENTER 0 TO SHUTDOWN\n\r");
     uscanf("%d", &reboot_);
     if (reboot_ == 1)
         reboot();
 
-    printf("Entering sleep mode...\n\r");
-    while (1)
+    if (reboot_ == 1)
         ;
 }
 
@@ -103,18 +102,15 @@ void unprivileged_mode(void)
     __asm volatile("MSR CONTROL, R0");
 }
 
-void __set_interrupt_priorities(void)
+void kmain(void)
 {
+    __sys_init();
+
+
     __NVIC_SetPriority(SVCall_IRQn, 1);
     __NVIC_SetPriority(SysTick_IRQn, 0x2);
     // lowest priority given to PendSV
     __NVIC_SetPriority(PendSV_IRQn, 0xFF);
-}
-
-void kmain(void)
-{
-    __sys_init();
-    __set_interrupt_priorities();
 
     fopen("STDIN FILENO", O_RDONLY);
     fopen("STDOUT FILENO", O_RDONLY);
@@ -141,7 +137,6 @@ void kmain(void)
     set_task_pending(1);
 
     task_start();
-    printf("\n\r\tAll Tasks Done!!!\n\r");
 
     while (1)
         ;
