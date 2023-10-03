@@ -11,6 +11,7 @@
     "errno.h": "c",
     "cm4.h": "c",
     "kstring.h": "c",
-    "typeinfo": "c"
+    "typeinfo": "c",
+    "cstdio": "c"
   }
 }

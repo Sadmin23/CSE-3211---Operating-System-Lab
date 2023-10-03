@@ -29,7 +29,7 @@
  */
 
 #include <unistd.h>
-#include <kstdio.h>
+#include <types.h>
 /* Write your highlevel I/O details */
 
 void exit(void)
@@ -48,6 +48,11 @@ uint16_t getpid(void)
                    : "r"(&pid));
     __asm volatile("SVC #5");
     return pid;
+}
+
+void getfile(void)
+{
+    __asm volatile("SVC #54");
 }
 
 // attempts to read up to len bytes, returns the number of bytes read

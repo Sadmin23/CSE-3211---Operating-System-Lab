@@ -30,6 +30,7 @@
 
 #include <kmain.h>
 #include <schedule.h>
+
 #define STOP 1000000
 
 TCB_TypeDef task[22], _sleep;
@@ -77,7 +78,7 @@ void task1(void)
         {
             /* display how many increments it has successfully done!! */
             uprintf("Total increment done by task %d is: %d\n\r", task_id, inc_count);
-            int fd=fopen("S_DISPLAY", 2);
+            int fd = fopen("S_DISPLAY", 2);
             uprintf("Total increment done by task is: %d\n\r", inc_count);
             /* above is an SVC call */
             break;
@@ -128,9 +129,11 @@ void kmain(void)
     // set pendsv before starting task
     set_task_pending(1);
 
-    // int lol = fopen("S_DISPLAY", 7);
+    int lol = fopen("S_DISPLAY", 7);
 
     fprintf("Hello\n");
+
+    // getfile();
 
     task_start();
     uprintf("\n\r\tAll Tasks Done!!!\n\r");

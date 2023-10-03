@@ -66,6 +66,23 @@ int kfopen(unsigned char *s, int fd)
     return current_index - 1;
 }
 
+void printDirectory()
+{
+    for (int i = 0; i < current_index; ++i)
+    {
+        if (directory[i].t_ref != 0)
+        {
+            kprintf("----------------------------\n");
+            kprintf("Device %d:\n", i + 1);
+            kprintf("Name: %s\n", directory[i].name);
+            kprintf("t_ref: %d\n", directory[i].t_ref);
+            kprintf("t_access: %d\n", directory[i].t_access);
+            kprintf("op_addr: %d\n", directory[i].op_addr);
+            kprintf("----------------------------\n");
+        }
+    }
+}
+
 void __sys_start_task(void)
 {
     __asm volatile("POP {LR}");
@@ -151,8 +168,6 @@ void __sys_open(void)
     s = (unsigned char *)svc_args[1]; // R1
     int fd = (int)svc_args[2];        // R2
 
-    //    kprintf("%s", s);
-
     *((int *)svc_args[4]) = kfopen(s, fd);
     return;
 }
@@ -178,6 +193,11 @@ void __sys_reboot(void)
 void __sys_yield(void)
 {
     SCB->ICSR |= (1 << 28);
+}
+
+void __sys_getdirentry(void)
+{
+    printDirectory();
 }
 
 void syscall(uint16_t callno)
@@ -210,6 +230,9 @@ void syscall(uint16_t callno)
         break;
     case SYS_yield:
         __sys_yield();
+        break;
+    case SYS_getdirentry:
+        printDirectory();
         break;
     case SYS_start_task:
         __sys_start_task();
