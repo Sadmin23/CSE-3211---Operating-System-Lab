@@ -59,7 +59,7 @@ int kfopen(unsigned char *s, int fd)
     kstrcpy(entry.name, s);
     entry.t_access = fd;
     entry.t_ref = 1;
-    entry.op_addr = (uint32_t *)(DEVICE_STACK_START-(current_index*DEVICE_STACK_SIZE));
+    entry.op_addr = (uint32_t *)(DEVICE_STACK_START - (current_index * DEVICE_STACK_SIZE));
 
     directory[current_index] = entry;
     current_index++;
@@ -70,7 +70,7 @@ int kfopen(unsigned char *s, int fd)
 void kclose(int fd)
 {
     directory[fd].t_ref = 0;
-    kprintf("Closing file");
+    kprintf("\nClosing file #%d\n", fd);
 }
 
 void printDirectory()
@@ -176,7 +176,7 @@ void __sys_open(void)
     int fd = (int)svc_args[2];        // R2
 
     *((int *)svc_args[4]) = kfopen(s, fd);
-    printDirectory();
+    // printDirectory();
     return;
 }
 
@@ -189,7 +189,7 @@ void __sys_close(void)
     int fd = (int)svc_args[1]; // R1
 
     kclose(fd);
-    printDirectory();
+    // printDirectory();
     return;
 }
 
@@ -252,9 +252,7 @@ void syscall(uint16_t callno)
     case SYS_start_task:
         __sys_start_task();
         break;
-    /* return error code see error.h and errmsg.h ENOSYS sys_errlist[ENOSYS]*/
     default:
-        // return some negative value in r0
         break;
     }
 

@@ -31,7 +31,7 @@
 #include <kmain.h>
 #include <schedule.h>
 
-#define STOP 1000000
+#define STOP 10000000
 
 TCB_TypeDef task[22], _sleep;
 int count = 0;
@@ -46,7 +46,8 @@ void task_sleep(void)
     if (reboot_ == 1)
         reboot();
 
-    if (reboot_ == 1)
+    printf("Entering sleep mode...\n\r");
+    while (1)
         ;
 }
 
@@ -63,12 +64,11 @@ void Task(void)
 
         if (value != count + 1)
         {
-            printf("Task %d running", task_id);
+            printf("Task %d ", task_id);
             printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
         }
         else
         {
-            // printf("Task %d running No Error %d == %d\n\r", task_id, value, count + 1); /* It is an SVC call*/
             count = value;
             inc_count++;
         }
@@ -102,10 +102,8 @@ void kmain(void)
 {
     __sys_init();
 
-
     __NVIC_SetPriority(SVCall_IRQn, 1);
     __NVIC_SetPriority(SysTick_IRQn, 0x2);
-    // lowest priority given to PendSV
     __NVIC_SetPriority(PendSV_IRQn, 0xFF);
 
     fopen("STDIN FILENO", O_RDONLY);

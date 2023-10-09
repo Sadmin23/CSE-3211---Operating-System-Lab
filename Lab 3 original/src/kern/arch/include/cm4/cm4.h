@@ -239,7 +239,6 @@ __attribute__((weak)) uint32_t __getSysTickCount(void);
 __attribute__((weak)) void __updateSysTick(uint32_t);
 __attribute__((weak)) uint32_t __getTime(void);
 void set_task_pending(int value);
-int add_file(int fd);
 /**
  * Functions on FPU
  **/

@@ -45,10 +45,12 @@ void __sys_init(void)
 
 	kprintf("\n************************************\r\n");
 	kprintf("Booting DUOS .....\r\n");
+	kprintf("Copyright (c) 2022, Prof. Mosaddek Tushar, CSE, DU\r\n");
 	kprintf("Copyright (c) 2022, CSE, DU\r\n");
 	kprintf("Credit: Third Year 2022\r\n");
 	kprintf("CPUID %x\n", SCB->CPUID);
-	kprintf("OS Version: 1.0\n");
+	kprintf("OS Version: 1.0.1\n");
+	kprintf("Modified by Md. Sadmin Tahmid Khan(35) and Md. Saim Ahmmed Utsho(41)\n");
 	kprintf("Time Elapse %d ms\n", __getTime());
 	kprintf("Welcome ....\r\n");
 	kprintf("*************************************\r\n");

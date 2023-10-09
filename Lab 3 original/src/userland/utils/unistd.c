@@ -30,12 +30,16 @@
 
 #include <unistd.h>
 #include <types.h>
+#include <syscall_def.h>
+
 /* Write your highlevel I/O details */
 
 void exit(void)
 {
     __asm volatile("MOV R12, R11");
-    __asm volatile("SVC #3");
+    __asm volatile("SVC %[value]"
+                   :
+                   : [value] "I"(SYS__exit));
     yield();
 }
 
@@ -46,7 +50,9 @@ uint16_t getpid(void)
     __asm volatile("MOV R0, %0"
                    :
                    : "r"(&pid));
-    __asm volatile("SVC #5");
+    __asm volatile("SVC %[value]"
+                   :
+                   : [value] "I"(SYS_getpid));
     return pid;
 }
 
@@ -66,7 +72,9 @@ int read(uint32_t fd, unsigned char *s, size_t len)
     __asm volatile("MOV R12, %0"
                    :
                    : "r"(&ret));
-    __asm volatile("SVC #50");
+    __asm volatile("SVC %[value]"
+                   :
+                   : [value] "I"(SYS_read));
     return ret;
 }
 
@@ -85,7 +93,9 @@ int write(uint32_t fd, unsigned char *s, size_t len)
     __asm volatile("MOV R12, %0"
                    :
                    : "r"(&ret));
-    __asm volatile("SVC #55");
+    __asm volatile("SVC %[value]"
+                   :
+                   : [value] "I"(SYS_write));
     return ret;
 }
 
@@ -101,7 +111,9 @@ int fopen(unsigned char *s, uint32_t fd)
     __asm volatile("MOV R12, %0"
                    :
                    : "r"(&ret));
-    __asm volatile("SVC #45");
+    __asm volatile("SVC %[value]"
+                   :
+                   : [value] "I"(SYS_open));
     return ret;
 }
 
@@ -114,7 +126,9 @@ int fclose(uint32_t fd)
     __asm volatile("MOV R12, %0"
                    :
                    : "r"(&ret));
-    __asm volatile("SVC #49");
+    __asm volatile("SVC %[value]"
+                   :
+                   : [value] "I"(SYS_close));
     return ret;
 }
 
@@ -124,18 +138,24 @@ int get_time(void)
     __asm volatile("MOV R1, %0"
                    :
                    : "r"(&time));
-    __asm volatile("SVC #113");
+    __asm volatile("SVC %[value]"
+                   :
+                   : [value] "I"(SYS___time));
     return (int)(time);
 }
 
 void reboot(void)
 {
-    __asm volatile("SVC #119");
+    __asm volatile("SVC %[value]"
+                   :
+                   : [value] "I"(SYS_reboot));
 }
 
 void yield(void)
 {
-    __asm volatile("SVC #120");
+    __asm volatile("SVC %[value]"
+                   :
+                   : [value] "I"(SYS_yield));
 }
 
 int printf(char *format, ...)
@@ -310,7 +330,7 @@ int fprintf(int fd, char *format, ...)
     unsigned char result[512];
     int index = 0;
 
-    kprintf("Printing in device #%d:\n", fd);
+    kprintf("\nPrinting in device #%d:\n", fd);
 
     for (tr = format; *tr != '\0'; tr++)
     {
