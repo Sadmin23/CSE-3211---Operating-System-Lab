@@ -155,3 +155,31 @@ void kscanf(char *format,...)
 	va_end(list);
 }
 
+char* kstrcpy(char* destination, unsigned char* source) {
+    // Copy characters from source to destination until '\0' (null character) is encountered
+    while (*source != '\0') {
+        *destination = *source;
+        destination++;
+        source++;
+    }
+
+    // Null-terminate the destination string
+    *destination = '\0';
+
+    return destination;  // Return the destination pointer
+}
+
+int kstrcmp(char* str1, unsigned char* str2) {
+    // Compare characters until a difference or the end of a string is reached
+    while (*str1 != '\0' && *str2 != '\0') {
+        if (*str1 != *str2) {
+            // If characters are different, return the difference
+            return (*str1 - *str2);
+        }
+        str1++;
+        str2++;
+    }
+
+    // If one string is longer than the other, return the length difference
+    return (*str1 - *str2);
+}

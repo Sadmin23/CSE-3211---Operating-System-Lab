@@ -39,6 +39,46 @@ volatile static int pend_task = 0;
  * redefining the function to change its characteristics whenever necessary.
  **************************************************************************************/
 
+__attribute__((weak)) void __SysTick_init(uint32_t reload)
+{
+    SYSTICK->CTRL &= ~(1 << 0); // disable systick timer
+    SYSTICK->VAL = 0;           // initialize the counter
+    __mscount = 0;
+    SYSTICK->LOAD = PLL_N * reload;
+    SYSTICK->CTRL |= 1 << 1 | 1 << 2; // enable interrupt and internal clock source
+    SYSTICK->CTRL |= 1 << 0;          // enable systick counter
+}
+__attribute__((weak)) uint32_t __getTime(void)
+{
+    return (__mscount + (SYSTICK->LOAD - SYSTICK->VAL) / (PLL_N * 1000));
+}
+__attribute__((weak)) void SysTick_Handler()
+{
+    __mscount += (SYSTICK->LOAD) / (PLL_N * 1000);
+    if (pend_task != 0)
+        // pendsv set pending bit
+        SCB->ICSR |= (1 << 28);
+}
+
+void set_task_pending(int value)
+{
+    if (value == 0)
+    {
+        pend_task = 0;
+    }
+    else
+    {
+        pend_task = 1;
+    }
+}
+
+void __enable_fpu()
+{
+    SCB->CPACR |= ((0xF << 20));
+}
+
+// old sys.c nvic related functions start from here
+
 void SetPriorityGroup(uint32_t group)
 {
     SCB->AIRCR |= (0x5FA << 16) | (group << 24);

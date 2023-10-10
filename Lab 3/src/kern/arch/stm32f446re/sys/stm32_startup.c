@@ -92,7 +92,6 @@ void SVC_Handler_C(unsigned int * svc_args) {
     stacked_r[1] = svc_args[1];
     stacked_r[2] = svc_args[2];
     stacked_r[3] = svc_args[3];
-
     stacked_r[4] = svc_args[4];
 
     lr = svc_args[5];

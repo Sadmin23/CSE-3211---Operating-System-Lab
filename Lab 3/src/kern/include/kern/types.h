@@ -58,4 +58,13 @@ typedef struct ready_queue
 	int ed;
 	TCB_TypeDef *q[25];
 } ReadyQ_TypeDef;
+
+typedef struct dev_t
+{
+	char name[32]; // Device name or symbol
+	int t_ref;	   // Number of open count
+	int t_access;  // open type O_RDONLY, O_WRDONLY, O_APPEND
+	int op_addr;   // Address of the datastructure operations
+} dev_table;
+
 #endif

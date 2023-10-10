@@ -42,7 +42,7 @@
 #define TERMINATED 3
 #define KILLED 4
 
-void _schedule(void);
+void context_switch(void);
 
 //task related functions
 uint16_t generate_task_id(void);
