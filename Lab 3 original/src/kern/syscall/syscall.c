@@ -42,7 +42,7 @@ dev_table directory[64];
 
 int current_index = 0;
 
-int kfopen(unsigned char *s, int fd)
+int open_directory(unsigned char *s, int fd)
 {
     for (int i = 0; i < current_index; ++i)
     {
@@ -67,13 +67,13 @@ int kfopen(unsigned char *s, int fd)
     return current_index - 1;
 }
 
-void kclose(int fd)
+void close_directory(int fd)
 {
     directory[fd].t_ref = 0;
     kprintf("\nClosing file #%d\n", fd);
 }
 
-void printDirectory()
+void get_directory()
 {
     for (int i = 0; i < current_index; ++i)
     {
@@ -175,8 +175,8 @@ void __sys_open(void)
     s = (unsigned char *)svc_args[1]; // R1
     int fd = (int)svc_args[2];        // R2
 
-    *((int *)svc_args[4]) = kfopen(s, fd);
-    // printDirectory();
+    *((int *)svc_args[4]) = open_directory(s, fd);
+    get_directory();
     return;
 }
 
@@ -188,8 +188,8 @@ void __sys_close(void)
                    :);
     int fd = (int)svc_args[1]; // R1
 
-    kclose(fd);
-    // printDirectory();
+    close_directory(fd);
+    // get_directory();
     return;
 }
 

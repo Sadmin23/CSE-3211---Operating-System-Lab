@@ -215,41 +215,41 @@ LOAD object/unistd.o
                 0x08001d6a                __disable_fault_irq
                 0x08001d7a                __get_FAULTMASK
                 0x08001d94                __get_BASEPRI
- .text          0x08001db0      0x468 object/syscall.o
-                0x08001db0                kfopen
-                0x08001e78                kclose
-                0x08001eac                printDirectory
+ .text          0x08001db0      0x46c object/syscall.o
+                0x08001db0                open_directory
+                0x08001e78                close_directory
+                0x08001eac                get_directory
                 0x08001f78                __sys_start_task
                 0x08001fb0                __sys_getpid
                 0x08001fd4                __sys_exit
                 0x08001ff4                __sys_read
                 0x08002050                __sys_write
                 0x08002084                __sys_open
-                0x080020ba                __sys_close
-                0x080020da                __sys_gettime
-                0x080020fc                __sys_reboot
-                0x0800211c                __sys_yield
-                0x0800213c                syscall
- .text          0x08002218        0x0 object/times.o
- .text          0x08002218      0x8c0 object/unistd.o
-                0x08002218                exit
-                0x08002228                getpid
-                0x08002248                read
-                0x08002276                write
-                0x080022a4                fopen
-                0x080022cc                fclose
-                0x080022ee                get_time
-                0x0800230c                reboot
-                0x0800231c                yield
-                0x0800232c                printf
-                0x0800261c                uscanf
-                0x080027c6                fprintf
+                0x080020be                __sys_close
+                0x080020de                __sys_gettime
+                0x08002100                __sys_reboot
+                0x08002120                __sys_yield
+                0x08002140                syscall
+ .text          0x0800221c        0x0 object/times.o
+ .text          0x0800221c      0x8c0 object/unistd.o
+                0x0800221c                exit
+                0x0800222c                getpid
+                0x0800224c                read
+                0x0800227a                write
+                0x080022a8                fopen
+                0x080022d0                fclose
+                0x080022f2                get_time
+                0x08002310                reboot
+                0x08002320                yield
+                0x08002330                printf
+                0x08002620                uscanf
+                0x080027ca                fprintf
  *(.rodata)
- .rodata        0x08002ad8       0x6a object/schedule.o
-                0x08002b40                initial_task_id
- *fill*         0x08002b42        0x2 
- .rodata        0x08002b44      0x168 object/sys_init.o
- .rodata        0x08002cac      0x122 object/kmain.o
+ .rodata        0x08002adc       0x6a object/schedule.o
+                0x08002b44                initial_task_id
+ *fill*         0x08002b46        0x2 
+ .rodata        0x08002b48      0x168 object/sys_init.o
+ .rodata        0x08002cb0      0x11e object/kmain.o
  *fill*         0x08002dce        0x2 
  .rodata        0x08002dd0       0x46 object/stm32_startup.o
  *fill*         0x08002e16        0x2 

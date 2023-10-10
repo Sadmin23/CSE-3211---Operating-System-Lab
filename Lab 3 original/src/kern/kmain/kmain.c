@@ -46,7 +46,7 @@ void task_sleep(void)
     if (reboot_ == 1)
         reboot();
 
-    printf("Entering sleep mode...\n\r");
+    printf("SHUTTING DOWN DUOS...\n\r");
     while (1)
         ;
 }
@@ -76,7 +76,6 @@ void Task(void)
         {
             printf("Total increment done by task %d is: %d\n\r", task_id, inc_count);
             printf("Total increment done by task is: %d\n\r", inc_count);
-            /* above is an SVC call */
             int fd = fopen("S_DISPLAY", O_WRDONLY);
 
             fprintf(fd, "%d\n", x);
@@ -91,10 +90,8 @@ void Task(void)
 
 void unprivileged_mode(void)
 {
-    // read operation from special register CPSR and SPSR
     __asm volatile("MRS R0, CONTROL");
     __asm volatile("ORRS R0, R0, #1");
-    // write operation to special register CPSR and SPSR
     __asm volatile("MSR CONTROL, R0");
 }
 
@@ -125,9 +122,9 @@ void kmain(void)
         add_to_ready_queue(task + i);
     set_sleeping_task(&_sleep);
 
-    // going to user mode
+
     unprivileged_mode();
-    // set pendsv before starting task
+    
     set_task_pending(1);
 
     task_start();
