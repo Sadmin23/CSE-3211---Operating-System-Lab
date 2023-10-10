@@ -48,32 +48,6 @@ __attribute__((weak)) void __SysTick_init(uint32_t reload)
     SYSTICK->CTRL |= 1 << 1 | 1 << 2; // enable interrupt and internal clock source
     SYSTICK->CTRL |= 1 << 0;          // enable systick counter
 }
-
-/************************************************************************************
- * __sysTick_enable(void)
- * The function enables the SysTick clock if already not enabled.
- * redefining the function to change its characteristics whenever necessary.
- **************************************************************************************/
-__attribute__((weak)) void __sysTick_enable(void)
-{
-    if (SYSTICK->CTRL & ~(1 << 0))
-        SYSTICK->CTRL |= 1 << 0;
-}
-__attribute__((weak)) void __sysTick_disable(void)
-{
-    if (!(SYSTICK->CTRL & ~(1 << 0)))
-        SYSTICK->CTRL &= ~(1 << 0);
-}
-__attribute__((weak)) uint32_t __getSysTickCount(void)
-{
-    return SYSTICK->VAL;
-}
-/************************************************************************************
- * __updateSysTick(uint32_t count)
- * Function reinitialize the SysTick clock. The function with a weak attribute enables
- * redefining the function to change its characteristics whenever necessary.
- **************************************************************************************/
-
 __attribute__((weak)) void __updateSysTick(uint32_t count)
 {
     SYSTICK->CTRL &= ~(1 << 0); // disable systick timer
@@ -83,13 +57,6 @@ __attribute__((weak)) void __updateSysTick(uint32_t count)
     SYSTICK->LOAD = PLL_N * count;
     SYSTICK->CTRL |= 1 << 0; // enable systick counter
 }
-
-/************************************************************************************
- * __getTime(void)
- * Function return the SysTick elapsed time from the begining or reinitialing. The function with a weak attribute enables
- * redefining the function to change its characteristics whenever necessary.
- **************************************************************************************/
-
 __attribute__((weak)) uint32_t __getTime(void)
 {
     return (__mscount + (SYSTICK->LOAD - SYSTICK->VAL) / (PLL_N * 1000));

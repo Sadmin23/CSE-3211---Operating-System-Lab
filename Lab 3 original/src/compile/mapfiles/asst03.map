@@ -27,7 +27,7 @@ LOAD object/syscall.o
 LOAD object/times.o
 LOAD object/unistd.o
 
-.text           0x08000000     0x35b4
+.text           0x08000000     0x3544
                 0x08000000                _stext = .
  *(.isr_vector)
  .isr_vector    0x08000000      0x1c4 object/stm32_startup.o
@@ -185,103 +185,100 @@ LOAD object/unistd.o
                 0x08001658                BusFault_Handler
                 0x08001668                SVCall_Handler
                 0x0800167e                SVC_Handler_C
- .text          0x080016e8      0x6c8 object/cm4.o
+ .text          0x080016e8      0x658 object/cm4.o
                 0x080016e8                __SysTick_init
-                0x08001740                __sysTick_enable
-                0x0800176c                __sysTick_disable
-                0x08001798                __getSysTickCount
-                0x080017b0                __updateSysTick
-                0x08001808                __getTime
-                0x0800183c                SysTick_Handler
-                0x0800188c                set_task_pending
-                0x080018b8                __enable_fpu
-                0x080018dc                SetPriorityGroup
-                0x0800190c                __NVIC_SetPriority
-                0x08001a0c                __NVIC_GetPriority
-                0x08001a4c                __NVIC_EnableIRQn
-                0x08001ab4                __NVIC_DisableIRQn
-                0x08001b20                __NVIC_GetActive
-                0x08001b80                __get_pending_IRQn
-                0x08001be0                __clear_pending_IRQn
-                0x08001c48                __set_pending_IRQn
-                0x08001cb0                __disable_irq
-                0x08001cc0                __enable_irq
-                0x08001cd0                __set_BASEPRI
-                0x08001cf0                __unset_BASEPRI
-                0x08001d0c                __set_PRIMASK
-                0x08001d26                __get_PRIMASK
-                0x08001d40                __enable_fault_irq
-                0x08001d50                __set_FAULTMASK
-                0x08001d6a                __disable_fault_irq
-                0x08001d7a                __get_FAULTMASK
-                0x08001d94                __get_BASEPRI
- .text          0x08001db0      0x46c object/syscall.o
-                0x08001db0                open_directory
-                0x08001e78                close_directory
-                0x08001eac                get_directory
-                0x08001f78                __sys_start_task
-                0x08001fb0                __sys_getpid
-                0x08001fd4                __sys_exit
-                0x08001ff4                __sys_read
-                0x08002050                __sys_write
-                0x08002084                __sys_open
-                0x080020be                __sys_close
-                0x080020de                __sys_gettime
-                0x08002100                __sys_reboot
-                0x08002120                __sys_yield
-                0x08002140                syscall
- .text          0x0800221c        0x0 object/times.o
- .text          0x0800221c      0x8c0 object/unistd.o
-                0x0800221c                exit
-                0x0800222c                getpid
-                0x0800224c                read
-                0x0800227a                write
-                0x080022a8                fopen
-                0x080022d0                fclose
-                0x080022f2                get_time
-                0x08002310                reboot
-                0x08002320                yield
-                0x08002330                printf
-                0x08002620                uscanf
-                0x080027ca                fprintf
+                0x08001740                __updateSysTick
+                0x08001798                __getTime
+                0x080017cc                SysTick_Handler
+                0x0800181c                set_task_pending
+                0x08001848                __enable_fpu
+                0x0800186c                SetPriorityGroup
+                0x0800189c                __NVIC_SetPriority
+                0x0800199c                __NVIC_GetPriority
+                0x080019dc                __NVIC_EnableIRQn
+                0x08001a44                __NVIC_DisableIRQn
+                0x08001ab0                __NVIC_GetActive
+                0x08001b10                __get_pending_IRQn
+                0x08001b70                __clear_pending_IRQn
+                0x08001bd8                __set_pending_IRQn
+                0x08001c40                __disable_irq
+                0x08001c50                __enable_irq
+                0x08001c60                __set_BASEPRI
+                0x08001c80                __unset_BASEPRI
+                0x08001c9c                __set_PRIMASK
+                0x08001cb6                __get_PRIMASK
+                0x08001cd0                __enable_fault_irq
+                0x08001ce0                __set_FAULTMASK
+                0x08001cfa                __disable_fault_irq
+                0x08001d0a                __get_FAULTMASK
+                0x08001d24                __get_BASEPRI
+ .text          0x08001d40      0x46c object/syscall.o
+                0x08001d40                open_directory
+                0x08001e08                close_directory
+                0x08001e3c                get_directory
+                0x08001f08                __sys_start_task
+                0x08001f40                __sys_getpid
+                0x08001f64                __sys_exit
+                0x08001f84                __sys_read
+                0x08001fe0                __sys_write
+                0x08002014                __sys_open
+                0x0800204e                __sys_close
+                0x0800206e                __sys_gettime
+                0x08002090                __sys_reboot
+                0x080020b0                __sys_yield
+                0x080020d0                syscall
+ .text          0x080021ac        0x0 object/times.o
+ .text          0x080021ac      0x8c0 object/unistd.o
+                0x080021ac                exit
+                0x080021bc                getpid
+                0x080021dc                read
+                0x0800220a                write
+                0x08002238                fopen
+                0x08002260                fclose
+                0x08002282                get_time
+                0x080022a0                reboot
+                0x080022b0                yield
+                0x080022c0                printf
+                0x080025b0                uscanf
+                0x0800275a                fprintf
  *(.rodata)
- .rodata        0x08002adc       0x6a object/schedule.o
-                0x08002b44                initial_task_id
- *fill*         0x08002b46        0x2 
- .rodata        0x08002b48      0x168 object/sys_init.o
- .rodata        0x08002cb0      0x11e object/kmain.o
- *fill*         0x08002dce        0x2 
- .rodata        0x08002dd0       0x46 object/stm32_startup.o
- *fill*         0x08002e16        0x2 
- .rodata        0x08002e18      0x77d object/syscall.o
-                0x08003408                sys_errlist
-                0x0800350c                sys_nerr
- *fill*         0x08003595        0x3 
- .rodata        0x08003598       0x1a object/unistd.o
-                0x080035b4                . = ALIGN (0x4)
- *fill*         0x080035b2        0x2 
-                0x080035b4                _etext = .
-                0x080035b4                _la_data = LOADADDR (.data)
+ .rodata        0x08002a6c       0x6a object/schedule.o
+                0x08002ad4                initial_task_id
+ *fill*         0x08002ad6        0x2 
+ .rodata        0x08002ad8      0x168 object/sys_init.o
+ .rodata        0x08002c40      0x11e object/kmain.o
+ *fill*         0x08002d5e        0x2 
+ .rodata        0x08002d60       0x46 object/stm32_startup.o
+ *fill*         0x08002da6        0x2 
+ .rodata        0x08002da8      0x77d object/syscall.o
+                0x08003398                sys_errlist
+                0x0800349c                sys_nerr
+ *fill*         0x08003525        0x3 
+ .rodata        0x08003528       0x1a object/unistd.o
+                0x08003544                . = ALIGN (0x4)
+ *fill*         0x08003542        0x2 
+                0x08003544                _etext = .
+                0x08003544                _la_data = LOADADDR (.data)
 
-.glue_7         0x080035b4        0x0
- .glue_7        0x080035b4        0x0 linker stubs
+.glue_7         0x08003544        0x0
+ .glue_7        0x08003544        0x0 linker stubs
 
-.glue_7t        0x080035b4        0x0
- .glue_7t       0x080035b4        0x0 linker stubs
+.glue_7t        0x08003544        0x0
+ .glue_7t       0x08003544        0x0 linker stubs
 
-.vfp11_veneer   0x080035b4        0x0
- .vfp11_veneer  0x080035b4        0x0 linker stubs
+.vfp11_veneer   0x08003544        0x0
+ .vfp11_veneer  0x08003544        0x0 linker stubs
 
-.v4_bx          0x080035b4        0x0
- .v4_bx         0x080035b4        0x0 linker stubs
+.v4_bx          0x08003544        0x0
+ .v4_bx         0x08003544        0x0 linker stubs
 
-.iplt           0x080035b4        0x0
- .iplt          0x080035b4        0x0 object/kstdio.o
+.iplt           0x08003544        0x0
+ .iplt          0x08003544        0x0 object/kstdio.o
 
-.rel.dyn        0x080035b4        0x0
- .rel.iplt      0x080035b4        0x0 object/kstdio.o
+.rel.dyn        0x08003544        0x0
+ .rel.iplt      0x08003544        0x0 object/kstdio.o
 
-.data           0x20000000       0x2c load address 0x080035b4
+.data           0x20000000       0x2c load address 0x08003544
                 0x20000000                _sdata = .
  *(.data)
  .data          0x20000000        0x0 object/kfloat.o
@@ -308,10 +305,10 @@ LOAD object/unistd.o
                 0x2000002c                . = ALIGN (0x4)
                 0x2000002c                _edata = .
 
-.igot.plt       0x2000002c        0x0 load address 0x080035e0
+.igot.plt       0x2000002c        0x0 load address 0x08003570
  .igot.plt      0x2000002c        0x0 object/kstdio.o
 
-.bss            0x2000002c      0xeac load address 0x080035e0
+.bss            0x2000002c      0xeac load address 0x08003570
                 0x2000002c                _sbss = .
  *(.bss)
  .bss           0x2000002c        0x0 object/kfloat.o
