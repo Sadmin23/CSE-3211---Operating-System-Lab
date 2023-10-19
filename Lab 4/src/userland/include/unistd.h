@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 
+ * Copyright (c) 2022
  * Computer Science and Engineering, University of Dhaka
  * Credit: CSE Batch 25 (starter) and Prof. Mosaddek Tushar
  *
@@ -27,7 +27,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
- 
+
 #ifndef __UNISTD_H
 #define __UNISTD_H
 
@@ -39,7 +39,6 @@
 #include <kstring.h>
 #include <types.h>
 /* Basic input and output function */
-
 
 int write(uint32_t fd, unsigned char *s, size_t len);
 int printf(char *format, ...);
@@ -57,6 +56,6 @@ void yield(void);
 
 int fprintf(int fd, char *format, ...);
 
-uint16_t getpid(void);
+TCB_TypeDef getpid(void);
 
 #endif

@@ -43,9 +43,9 @@ void exit(void)
     yield();
 }
 
-uint16_t getpid(void)
+TCB_TypeDef getpid(void)
 {
-    uint16_t pid = 0;
+    TCB_TypeDef pid;
     __asm volatile("MOV R12, R11");
     __asm volatile("MOV R0, %0"
                    :

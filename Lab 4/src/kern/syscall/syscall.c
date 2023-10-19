@@ -115,7 +115,7 @@ void __sys_getpid(void)
     unsigned int *svc_args;
     __asm volatile("MOV %0, R1"
                    : "=r"(svc_args));
-    *((unsigned int *)svc_args[0]) = (*((TCB_TypeDef *)svc_args[4])).task_id;
+    (*(TCB_TypeDef *)svc_args[0]) = (*((TCB_TypeDef *)svc_args[4]));
     return;
 }
 

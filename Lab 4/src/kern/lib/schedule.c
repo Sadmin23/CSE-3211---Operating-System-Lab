@@ -70,7 +70,6 @@ void task_create(TCB_TypeDef *tcb, void (*task_func)(void), uint32_t *stack) {
     tcb->task_id = generate_task_id();
     tcb->status = READY;
     // Initialize the stack for the task
-    tcb->run = task_func;
     // Point to the top of the stack
     tcb->psp = stack;
 
@@ -87,7 +86,7 @@ void task_create(TCB_TypeDef *tcb, void (*task_func)(void), uint32_t *stack) {
     // initializing registers r11 to r4
     for(int i = 0; i < 8; i++) {
         if(i == 0) {
-            // pushing reference of own task in r4
+            // pushing reference of own task in r11
             *(--tcb->psp) = (uint32_t) tcb;
         } else {
             *(--tcb->psp) = 0x0000000;

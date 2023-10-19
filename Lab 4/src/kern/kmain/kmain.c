@@ -58,17 +58,17 @@ void Task(void)
     uint32_t inc_count = 0;
     while (1)
     {
-        uint16_t task_id = getpid() - 1000; /* It is an SVC call*/
+        TCB_TypeDef task = getpid(); /* It is an SVC call*/
 
-        if (flag == 0)
-        {
-            flag = 1;
+        // if (flag == 0)
+        // {
+        //     flag = 1;
             value = count;
             value++;
 
             if (value != count + 1)
             {
-                printf("Task %d ", task_id);
+                printf("Task %d ", task.task_id);
                 printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
             }
             else
@@ -76,11 +76,11 @@ void Task(void)
                 count = value;
                 inc_count++;
             }
-            flag = 0;
-        }
+        //     flag = 0;
+        // }
         if (count >= STOP)
         {
-            printf("Total increment done by task %d is: %d\n\r", task_id, inc_count);
+            printf("Total increment done by task %d is: %d\n\r", task.task_id, inc_count);
             printf("Total increment done by task is: %d\n\r", inc_count);
 
             break;

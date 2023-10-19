@@ -47,7 +47,6 @@ typedef struct task_tcb
 	uint32_t execution_time;   // total execution time (in ms)
 	uint32_t waiting_time;	   // total waiting time (in ms)
 	uint32_t digital_sinature; // current value is 0x00000001
-	void (*run)(void);
 } TCB_TypeDef;
 
 typedef struct ready_queue
@@ -58,6 +57,15 @@ typedef struct ready_queue
 	int ed;
 	TCB_TypeDef *q[25];
 } ReadyQ_TypeDef;
+
+typedef struct blocked_queue
+{
+	int size;
+	int max;
+	int st;
+	int ed;
+	TCB_TypeDef *q[25];
+} BlockedQ_TypeDef;
 
 typedef struct dev_t
 {
