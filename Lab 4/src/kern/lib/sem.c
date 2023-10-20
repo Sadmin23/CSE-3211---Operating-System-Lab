@@ -17,28 +17,16 @@ extern void sem_dec(const void *semaphore)
     __asm volatile("BNE 1b");
     __asm volatile("DMB");
     __asm volatile("BX LR");
+    __asm volatile("BX LR");
+    __asm volatile("BX LR");
 
     return;
 }
-
-void atomic_increment(uint32_t *value)
-{
-    uint32_t result;
-    uint32_t tmp;
-
-    tmp = *value;
-    tmp++;
-    __asm__ __volatile__(
-        "strex %0, %1, [%2]"
-        : "=&r"(result)
-        : "r"(tmp), "r"(value));
-}
-
 // sem_inc
 // Declare for use from C as extern void sem_inc(void * semaphore);
 extern void sem_inc(const void *semaphore)
 {
-    __asm volatile("LDREX R1, [%0]"
+    __asm volatile("1: LDREX R1, [%0]"
                    :
                    : "r"(semaphore));
     __asm volatile("ADD R1, #1");
