@@ -68,11 +68,11 @@ void Task(void)
         //     flag = 1;
 
         // add_task(task);
-        //printf("%d %d\n", task.task_id, semaphore);
+        printf("%d %d\n", task.task_id, semaphore);
 
         sem_dec(&semaphore);
 
-        //printf("%d %d\n", task.task_id, semaphore);
+        printf("%d %d\n", task.task_id, semaphore);
 
         value = count;
         value++;
@@ -90,7 +90,7 @@ void Task(void)
 
         sem_inc(&semaphore);
 
-        //printf("%d %d\n", task.task_id, semaphore);
+        printf("%d %d\n", task.task_id, semaphore);
 
         //     flag = 0;
         // }
