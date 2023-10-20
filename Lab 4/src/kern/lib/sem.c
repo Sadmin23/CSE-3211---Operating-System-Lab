@@ -9,7 +9,7 @@ extern void sem_dec(const void *semaphore)
                    :
                    : "r"(semaphore));
     __asm volatile("CMP R1, #0");
-    __asm volatile("BEQ 1b");
+    __asm volatile("BEQ 2f");
     __asm volatile("SUB R1, #1");
     __asm volatile("STREX R2,R1,[%0]"
                    : "=r"(semaphore));
@@ -17,8 +17,8 @@ extern void sem_dec(const void *semaphore)
     __asm volatile("BNE 1b");
     __asm volatile("DMB");
     __asm volatile("BX LR");
-    __asm volatile("BX LR");
-    __asm volatile("BX LR");
+    // __asm volatile("2: WFI");
+    // __asm volatile("B 1b");
 
     return;
 }
@@ -34,8 +34,11 @@ extern void sem_inc(const void *semaphore)
                    : "=r"(semaphore));
     __asm volatile("CMP R2, #0");
     __asm volatile("BNE 1b");
+    __asm volatile("CMP R1, #1");
     __asm volatile("DMB");
+    __asm volatile("BGE 2f");
     __asm volatile("BX LR");
+    __asm volatile("2: BX LR");
 
     return;
 }
