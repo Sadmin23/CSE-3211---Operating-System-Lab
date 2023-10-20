@@ -2,46 +2,77 @@
 #include <types.h>
 
 ReadyQ_TypeDef rq;
+BlockedQ_TypeDef bq;
 TCB_TypeDef *current, *__sleep;
 
-void set_sleeping_task(TCB_TypeDef *s) {
+void set_sleeping_task(TCB_TypeDef *s)
+{
     __sleep = s;
     return;
 }
 
-void task_start(void) {
-    if(is_queue_empty() == 0) {
+void task_start(void)
+{
+    if (is_ready_queue_empty() == 0)
+    {
         kprintf("There is no task in the queue to start\n\r");
         return;
     }
-    TCB_TypeDef *qf = queue_front_();
+    TCB_TypeDef *qf = ready_queue_front_();
     current = qf;
     current->status = RUNNING;
-    __asm volatile ("MOV R12, %0" : : "r"(qf->psp));
-    //calls SYS_start_task from syscall
-    __asm volatile ("SVC #121");
+    __asm volatile("MOV R12, %0"
+                   :
+                   : "r"(qf->psp));
+    // calls SYS_start_task from syscall
+    __asm volatile("SVC #121");
 }
 
-void initialize_queue(void) {
+void initialize_queue(void)
+{
     rq.max = 22;
     rq.size = 0;
     rq.st = 0;
-    rq.ed = -1;    
+    rq.ed = -1;
+
+    bq.max = 22;
+    rq.size = 0;
+    rq.st = 0;
+    rq.ed = -1;
 }
 
-void add_to_ready_queue(TCB_TypeDef *t) {
-    if(rq.max >= rq.size + 1) {
-        rq.ed = (rq.ed + 1) % rq.max ;
+void add_to_ready_queue(TCB_TypeDef *t)
+{
+    if (rq.max >= rq.size + 1)
+    {
+        rq.ed = (rq.ed + 1) % rq.max;
         rq.q[rq.ed] = t;
         rq.size++;
-    } 
-    else {
+    }
+    else
+    {
         kprintf("The ready queue is full, thus the task could not be added\n\r");
     }
 }
 
-TCB_TypeDef *queue_front_(void) {
-    if(is_queue_empty() == 0) {
+void add_to_blocked_queue(TCB_TypeDef t)
+{
+    if (bq.max >= bq.size + 1)
+    {
+        bq.ed = (bq.ed + 1) % bq.max;
+        bq.q[bq.ed] = t;
+        bq.size++;
+    }
+    else
+    {
+        kprintf("The blocked queue is full, thus the task could not be added\n\r");
+    }
+}
+
+TCB_TypeDef *ready_queue_front_(void)
+{
+    if (is_ready_queue_empty() == 0)
+    {
         add_to_ready_queue(__sleep);
     }
     int front = rq.st;
@@ -50,19 +81,35 @@ TCB_TypeDef *queue_front_(void) {
     return *((rq.q) + front);
 }
 
-int is_queue_empty(void) {
+TCB_TypeDef blocked_queue_front_(void)
+{
+    int front = bq.st;
+    bq.st = (bq.st + 1) % bq.max;
+    bq.size--;
+    return bq.q[front];
+}
+
+int is_ready_queue_empty(void)
+{
     return rq.size;
+}
+
+int is_blocked_queue_empty(void)
+{
+    return bq.size;
 }
 
 const uint16_t initial_task_id = 1000;
 uint16_t last_assigned = initial_task_id;
 
 // Generate a unique ID for the task
-uint16_t generate_task_id(void) {
+uint16_t generate_task_id(void)
+{
     return last_assigned++;
-} 
+}
 
-void task_create(TCB_TypeDef *tcb, void (*task_func)(void), uint32_t *stack) {
+void task_create(TCB_TypeDef *tcb, void (*task_func)(void), uint32_t *stack)
+{
     // Initialize the TCB fields
     tcb->magic_number = 0xFECABAA0;
 
@@ -73,39 +120,46 @@ void task_create(TCB_TypeDef *tcb, void (*task_func)(void), uint32_t *stack) {
     // Point to the top of the stack
     tcb->psp = stack;
 
-    *(--tcb->psp) = DUMMY_XPSR;  // xPSR
-    *(--tcb->psp) = (uint32_t) task_func;  // PC (task entry point)
-    *(--tcb->psp) = 0xFFFFFFFD;  // LR Exception return table
-    
-    *(--tcb->psp) = 0x0000000;  // R12 - storing actual object address in here
-    *(--tcb->psp) = 0x0000000;  // R3
-    *(--tcb->psp) = 0x0000000;  // R2
-    *(--tcb->psp) = 0x0000000;  // R1
-    *(--tcb->psp) = 0x0000000;  // R0
-    
+    *(--tcb->psp) = DUMMY_XPSR;          // xPSR
+    *(--tcb->psp) = (uint32_t)task_func; // PC (task entry point)
+    *(--tcb->psp) = 0xFFFFFFFD;          // LR Exception return table
+
+    *(--tcb->psp) = 0x0000000; // R12 - storing actual object address in here
+    *(--tcb->psp) = 0x0000000; // R3
+    *(--tcb->psp) = 0x0000000; // R2
+    *(--tcb->psp) = 0x0000000; // R1
+    *(--tcb->psp) = 0x0000000; // R0
+
     // initializing registers r11 to r4
-    for(int i = 0; i < 8; i++) {
-        if(i == 0) {
+    for (int i = 0; i < 8; i++)
+    {
+        if (i == 0)
+        {
             // pushing reference of own task in r11
-            *(--tcb->psp) = (uint32_t) tcb;
-        } else {
+            *(--tcb->psp) = (uint32_t)tcb;
+        }
+        else
+        {
             *(--tcb->psp) = 0x0000000;
         }
     }
 }
 
-void context_switch(void) {
-    if(current->status == RUNNING) {
+void context_switch(void)
+{
+    if (current->status == RUNNING)
+    {
         current->status = READY;
         add_to_ready_queue(current);
-    } 
-    TCB_TypeDef *qf = queue_front_();
+    }
+    TCB_TypeDef *qf = ready_queue_front_();
     current = qf;
     current->status = RUNNING;
     return;
 }
 
-void __attribute__((naked)) PendSV_Handler(void) {
+void __attribute__((naked)) PendSV_Handler(void)
+{
     SCB->ICSR |= (1 << 27);
     /* Save current context */
 
@@ -115,14 +169,18 @@ void __attribute__((naked)) PendSV_Handler(void) {
     __asm volatile("STMDB R0!,{R4-R11}");
     __asm volatile("PUSH {LR}");
     // Save current psp value
-    __asm volatile ("MOV %0, R0": "=r"( current->psp ): );
+    __asm volatile("MOV %0, R0"
+                   : "=r"(current->psp)
+                   :);
 
     context_switch();
 
     // Get new task psp value
-    __asm volatile ("MOV R0, %0" : : "r"(current->psp));
+    __asm volatile("MOV R0, %0"
+                   :
+                   : "r"(current->psp));
     // Load R4 to R11 from taskstack (8 regs)
-    __asm volatile ("LDMIA R0!,{R4-R11}");
+    __asm volatile("LDMIA R0!,{R4-R11}");
     __asm volatile("MSR PSP,R0");
     __asm volatile("POP {LR}");
     __asm volatile("BX LR");

@@ -4,6 +4,8 @@
     "schedule.h": "c",
     "unistd.h": "c",
     "types.h": "c",
-    "kmain.h": "c"
+    "kmain.h": "c",
+    "syscall_def.h": "c",
+    "sem.h": "c"
   }
 }

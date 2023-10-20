@@ -30,8 +30,11 @@
 
 #include <kmain.h>
 #include <schedule.h>
+#include <sem.h>
 
 #define STOP 3000000
+
+int semaphore = 1;
 
 TCB_TypeDef task[22], _sleep;
 int count = 0;
@@ -63,6 +66,11 @@ void Task(void)
         // if (flag == 0)
         // {
         //     flag = 1;
+
+            //add_task(task);
+
+            sem_dec(&semaphore);            
+
             value = count;
             value++;
 
@@ -76,6 +84,9 @@ void Task(void)
                 count = value;
                 inc_count++;
             }
+
+            //sem_inc(&semaphore);
+
         //     flag = 0;
         // }
         if (count >= STOP)
@@ -85,6 +96,8 @@ void Task(void)
 
             break;
         }
+
+        //task = get_task();
     }
     exit();
 }

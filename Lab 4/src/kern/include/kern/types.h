@@ -64,7 +64,7 @@ typedef struct blocked_queue
 	int max;
 	int st;
 	int ed;
-	TCB_TypeDef *q[25];
+	TCB_TypeDef q[25];
 } BlockedQ_TypeDef;
 
 typedef struct dev_t
