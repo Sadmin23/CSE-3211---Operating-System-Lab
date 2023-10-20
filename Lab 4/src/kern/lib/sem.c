@@ -3,38 +3,51 @@
 
 // sem_dec
 // Declare for use from C as extern void sem_dec(void * semaphore);
-void sem_dec(const void *semaphore)
+extern void sem_dec(const void *semaphore)
 {
-    asm volatile("ldrex r1, [ %0 ] \n"     // s'= MEM[ &s ]
-                 "cmp    r1, #0 \n"        // s'?= 0
-                 "beq    sem_dec \n"      // if s'== 0, retry
-                 "sub    r1, r1, #1 \n"    // s'= s'- 1
-                "strex r2, r1, [ %0 ] \n" // r <= MEM[ &s ] = s'
-                //  "cmp    r2, #0 \n"        // r  ?= 0
-                //  "bne    sem_dec \n"      // if r  != 0, retry
-                //  "dmb \n"                  // memory barrier
-                //  "bx     lr \n"            // return
-                 :
-                 : "r"(semaphore)
-                 : "r0", "r1", "r2");
+    __asm volatile("1: LDREX R1, [%0]"
+                   :
+                   : "r"(semaphore));
+    __asm volatile("CMP R1, #0");
+    __asm volatile("BEQ 1b");
+    __asm volatile("SUB R1, #1");
+    __asm volatile("STREX R2,R1,[%0]"
+                   : "=r"(semaphore));
+    __asm volatile("CMP R2, #0");
+    __asm volatile("BNE 1b");
+    __asm volatile("DMB");
+    __asm volatile("BX LR");
 
     return;
 }
 
+void atomic_increment(uint32_t *value)
+{
+    uint32_t result;
+    uint32_t tmp;
+
+    tmp = *value;
+    tmp++;
+    __asm__ __volatile__(
+        "strex %0, %1, [%2]"
+        : "=&r"(result)
+        : "r"(tmp), "r"(value));
+}
+
 // sem_inc
 // Declare for use from C as extern void sem_inc(void * semaphore);
-void sem_inc(const void *semaphore)
+extern void sem_inc(const void *semaphore)
 {
-    asm volatile("ldrex r1, [ %0 ] \n"     // s'= MEM[ &s ]
-                 "add    r1, r1, #1 \n"    // s'= s'+ 1
-                 "strex r2, r1, [ %0 ] \n" // r <= MEM[ &s ] = s'
-                //  "cmp    r2, #0 \n"        // r  ?= 0
-                //  "bne    sem_inc \n"      // if r  != 0, retry
-                //  "dmb \n"                  // memory barrier
-                //  "bx     lr \n"            // return
-                 :
-                 : "r"(semaphore)
-                 : "r0", "r1", "r2");
+    __asm volatile("LDREX R1, [%0]"
+                   :
+                   : "r"(semaphore));
+    __asm volatile("ADD R1, #1");
+    __asm volatile("STREX R2,R1,[%0]"
+                   : "=r"(semaphore));
+    __asm volatile("CMP R2, #0");
+    __asm volatile("BNE 1b");
+    __asm volatile("DMB");
+    __asm volatile("BX LR");
 
     return;
 }
@@ -45,13 +58,13 @@ void add_task(TCB_TypeDef task)
 {
     add_to_blocked_queue(task);
 
-    sem_inc(&task_semaphore);
+    // sem_inc(&task_semaphore);
 
     return;
 }
 TCB_TypeDef get_task(void)
 {
-    sem_dec(&task_semaphore);
+    // sem_dec(&task_semaphore);
 
     TCB_TypeDef tmptask = blocked_queue_front_();
 

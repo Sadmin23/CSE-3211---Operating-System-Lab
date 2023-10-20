@@ -32,7 +32,7 @@
 #include <schedule.h>
 #include <sem.h>
 
-#define STOP 3000000
+#define STOP 10000
 
 int semaphore = 1;
 
@@ -67,25 +67,29 @@ void Task(void)
         // {
         //     flag = 1;
 
-            //add_task(task);
+        // add_task(task);
 
-            sem_dec(&semaphore);            
+        sem_dec(&semaphore);
 
-            value = count;
-            value++;
+        // atomic_increment(&semaphore);
 
-            if (value != count + 1)
-            {
-                printf("Task %d ", task.task_id);
-                printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
-            }
-            else
-            {
-                count = value;
-                inc_count++;
-            }
+        // printf("%d\n", semaphore);
 
-            //sem_inc(&semaphore);
+        value = count;
+        value++;
+
+        if (value != count + 1)
+        {
+            printf("Task %d ", task.task_id);
+            printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
+        }
+        else
+        {
+            count = value;
+            inc_count++;
+        }
+
+        //sem_inc(&semaphore);
 
         //     flag = 0;
         // }
@@ -97,7 +101,7 @@ void Task(void)
             break;
         }
 
-        //task = get_task();
+        // task = get_task();
     }
     exit();
 }
