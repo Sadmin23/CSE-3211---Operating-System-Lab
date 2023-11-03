@@ -32,7 +32,7 @@
 #include <schedule.h>
 #include <sem.h>
 
-#define STOP 1000
+#define STOP 10000000
 
 int semaphore = 0;
 
@@ -63,16 +63,12 @@ void Task(void)
     {
         TCB_TypeDef task = getpid(); /* It is an SVC call*/
 
-        // if (flag == 0)
-        // {
-        //     flag = 1;
+        // while (flag != 0)
+        //     ;
 
-        // add_task(task);
-        printf("Before Inc: %d %d\n", task.task_id, semaphore);
+        // flag = 1;
 
         sem_inc(&semaphore);
-
-        printf("After Inc: %d %d\n", task.task_id, semaphore);
 
         value = count;
         value++;
@@ -88,12 +84,10 @@ void Task(void)
             inc_count++;
         }
 
+//        flag = 0;
+
         sem_dec(&semaphore);
 
-        printf("After Dec: %d %d\n", task.task_id, semaphore);
-
-        //     flag = 0;
-        // }
         if (count >= STOP)
         {
             printf("Total increment done by task %d is: %d\n\r", task.task_id, inc_count);
