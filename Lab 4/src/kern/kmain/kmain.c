@@ -34,7 +34,7 @@
 
 #define STOP 10000000
 
-int semaphore = 0;
+semaphore = 0;
 
 TCB_TypeDef task[22], _sleep;
 int count = 0;
@@ -70,6 +70,8 @@ void Task(void)
 
         sem_inc(&semaphore);
 
+        //add_task(task);
+
         value = count;
         value++;
 
@@ -84,7 +86,7 @@ void Task(void)
             inc_count++;
         }
 
-//        flag = 0;
+        // flag = 0;
 
         sem_dec(&semaphore);
 

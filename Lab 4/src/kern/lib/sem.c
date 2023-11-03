@@ -1,5 +1,6 @@
 #include <sem.h>
 #include <schedule.h>
+#include <unistd.h>
 
 // sem_dec
 // Declare for use from C as extern void sem_dec(void * semaphore);
@@ -40,9 +41,15 @@ unsigned int task_semaphore = 0;
 
 void add_task(TCB_TypeDef task)
 {
-    add_to_blocked_queue(task);
 
-    // sem_inc(&task_semaphore);
+    if (task_semaphore == 0)
+        task_semaphore++;
+
+    else
+    {
+        task.status = 5;
+        yield();
+    }
 
     return;
 }
@@ -50,7 +57,7 @@ TCB_TypeDef get_task(void)
 {
     // sem_dec(&task_semaphore);
 
-    TCB_TypeDef tmptask = blocked_queue_front_();
+    //TCB_TypeDef tmptask = blocked_queue_front_();
 
-    return tmptask;
+    //return tmptask;
 }

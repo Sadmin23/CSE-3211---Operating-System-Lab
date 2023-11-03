@@ -55,7 +55,7 @@ void add_to_ready_queue(TCB_TypeDef *t)
     }
 }
 
-void add_to_blocked_queue(TCB_TypeDef t)
+void add_to_blocked_queue(TCB_TypeDef *t)
 {
     if (bq.max >= bq.size + 1)
     {
@@ -81,12 +81,12 @@ TCB_TypeDef *ready_queue_front_(void)
     return *((rq.q) + front);
 }
 
-TCB_TypeDef blocked_queue_front_(void)
+TCB_TypeDef *blocked_queue_front_(void)
 {
     int front = bq.st;
     bq.st = (bq.st + 1) % bq.max;
     bq.size--;
-    return bq.q[front];
+    return *((bq.q) + front);
 }
 
 int is_ready_queue_empty(void)
@@ -152,6 +152,10 @@ void context_switch(void)
         current->status = READY;
         add_to_ready_queue(current);
     }
+
+    else if (current->status == BLOCKED)
+        add_to_blocked_queue(current);
+
     TCB_TypeDef *qf = ready_queue_front_();
     current = qf;
     current->status = RUNNING;

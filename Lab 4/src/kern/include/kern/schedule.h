@@ -11,6 +11,7 @@
 #define RUNNING 2
 #define TERMINATED 3
 #define KILLED 4
+#define BLOCKED 5
 
 void context_switch(void);
 
@@ -26,8 +27,8 @@ TCB_TypeDef *ready_queue_front_(void);
 int is_ready_queue_empty(void);
 void set_sleeping_task(TCB_TypeDef *s);
 
-void add_to_blocked_queue(TCB_TypeDef t);
-TCB_TypeDef blocked_queue_front_(void);
+void add_to_blocked_queue(TCB_TypeDef *t);
+TCB_TypeDef *blocked_queue_front_(void);
 int is_blocked_queue_empty(void);
 
 #endif
