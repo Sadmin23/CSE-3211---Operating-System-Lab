@@ -40,18 +40,16 @@
  */
 typedef struct task_tcb
 {
-	uint32_t magic_number;		 // here it is 0xFECABAA0
-	uint16_t task_id;			 // a unsigned 16 bit integer starting from 1000
-	void *psp;					 // task stack pointer or stackframe address
-	uint16_t status;			 // task status: running, waiting, ready, killed, or terminated
-	uint32_t start_time_t;		 // process creation time
-	uint32_t reponse_time_t;	 // first time CPU allocation (execution) time
-	uint32_t execution_time_t;	 // total execution time (in ms)
-	uint32_t waiting_time_t;	 // total waiting time (in ms)
-	uint32_t completion_time_t;	 // total execution time (in ms)
-	uint32_t turn_around_time_t; // total waiting time (in ms)
-	uint32_t priority;			 // task priority
-	uint32_t digital_sinature;	 // current value is 0x00000001
+	uint32_t magic_number;	 // here it is 0xFECABAA0
+	uint16_t task_id;		 // a unsigned 16 bit integer starting from 1000
+	uint32_t *psp;			 // task stack pointer or stackframe address
+	uint16_t status;		 // task status: running, waiting, ready, killed, or terminated
+	uint16_t execution_time; // total execution time (in ms)
+	uint16_t waiting_time;	 // total waiting time (in ms)
+	uint16_t starting_time;
+	uint16_t response_time;
+	uint16_t completion_time;
+	uint32_t digital_sinature; // current value is 0x00000001
 } TCB_TypeDef;
 
 typedef struct ready_queue

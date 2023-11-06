@@ -4,7 +4,7 @@
 ReadyQ_TypeDef rq;
 BlockedQ_TypeDef bq;
 TCB_TypeDef *current, *__sleep;
-uint8_t t2;
+uint16_t t1, t2;
 
 void set_sleeping_task(TCB_TypeDef *s)
 {
@@ -23,9 +23,8 @@ void task_start(void)
     TCB_TypeDef *qf = ready_queue_front_();
     current = qf;
 
-    // t2 = __getTime();
-
-    // kprintf("Starting with Task %d at %d\n", current->task_id, t2);
+    t1 = __getTime();
+    current->response_time = t1;
 
     current->status = RUNNING;
     __asm volatile("MOV R12, %0"
@@ -123,6 +122,9 @@ void task_create(TCB_TypeDef *tcb, void (*task_func)(void), uint32_t *stack)
     // Generate a unique ID for the task
     tcb->task_id = generate_task_id();
     tcb->status = READY;
+    tcb->starting_time = __getTime();
+    tcb->execution_time = 0;
+    tcb->response_time = 0;
     // Initialize the stack for the task
     // Point to the top of the stack
     tcb->psp = stack;
@@ -163,14 +165,16 @@ void context_switch(void)
     else if (current->status == BLOCKED)
         add_to_blocked_queue(current);
 
-    // kprintf("Task %d to ", current->task_id);
+    t2 = __getTime();
+    current->execution_time += t2 - t1;
+    current->completion_time = t2;
+    t1 = t2;
 
     TCB_TypeDef *qf = ready_queue_front_();
     current = qf;
 
-    // t2 = __getTime();
-
-    // kprintf("Task %d at %dms\n", current->task_id, t2);
+    if (current->response_time == 0)
+        current->response_time = t2;
 
     current->status = RUNNING;
     return;
