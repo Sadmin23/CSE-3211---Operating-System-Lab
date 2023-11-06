@@ -59,9 +59,9 @@ void Task(void)
 {
     TCB_TypeDef task = getpid(); /* It is an SVC call*/
 
-    uint8_t t1 = __getTime();
+    uint16_t t1 = __getTime();
 
-    kprintf("Response Time: %d\n", t1);
+    kprintf("Response Time of Task %d: %dms\n",task.task_id, t1);
 
     uint32_t value;
     uint32_t inc_count = 0;
@@ -105,9 +105,10 @@ void Task(void)
 
         // task = get_task();
     }
-    uint8_t t2 = __getTime();
 
-    kprintf("Completion Time: %d\n", t2);
+    uint16_t t2 = __getTime();
+
+    kprintf("Completion Time of Task %d: %dms\n",task.task_id, t2);
 
     exit();
 }
@@ -127,7 +128,7 @@ void kmain(void)
     __NVIC_SetPriority(SysTick_IRQn, 0x2);
     __NVIC_SetPriority(PendSV_IRQn, 0xFF);
 
-    int task_count = 5;
+    int task_count = 10;
 
     for (int i = 0; i < task_count; i++)
     {
@@ -140,7 +141,7 @@ void kmain(void)
 
     uint8_t x = __getTime();
 
-    kprintf("Arrival Time: %d\n", x);
+    kprintf("Arrival Time: %dms\n", x);
 
     for (int i = 0; i < task_count; i++)
         add_to_ready_queue(task + i);

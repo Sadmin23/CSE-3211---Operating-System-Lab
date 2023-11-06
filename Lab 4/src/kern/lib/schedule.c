@@ -4,6 +4,7 @@
 ReadyQ_TypeDef rq;
 BlockedQ_TypeDef bq;
 TCB_TypeDef *current, *__sleep;
+uint8_t t2;
 
 void set_sleeping_task(TCB_TypeDef *s)
 {
@@ -21,6 +22,11 @@ void task_start(void)
 
     TCB_TypeDef *qf = ready_queue_front_();
     current = qf;
+
+    // t2 = __getTime();
+
+    // kprintf("Starting with Task %d at %d\n", current->task_id, t2);
+
     current->status = RUNNING;
     __asm volatile("MOV R12, %0"
                    :
@@ -157,8 +163,15 @@ void context_switch(void)
     else if (current->status == BLOCKED)
         add_to_blocked_queue(current);
 
+    // kprintf("Task %d to ", current->task_id);
+
     TCB_TypeDef *qf = ready_queue_front_();
     current = qf;
+
+    // t2 = __getTime();
+
+    // kprintf("Task %d at %dms\n", current->task_id, t2);
+
     current->status = RUNNING;
     return;
 }
