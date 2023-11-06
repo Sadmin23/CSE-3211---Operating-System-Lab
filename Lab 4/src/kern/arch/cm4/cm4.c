@@ -48,9 +48,9 @@ __attribute__((weak)) void __SysTick_init(uint32_t reload)
     SYSTICK->CTRL |= 1 << 1 | 1 << 2; // enable interrupt and internal clock source
     SYSTICK->CTRL |= 1 << 0;          // enable systick counter
 }
-__attribute__((weak)) uint32_t __getTime(void)
+uint32_t __getTime(void)
 {
-    return (__mscount + (SYSTICK->LOAD - SYSTICK->VAL) / (PLL_N * 1000));
+    return __mscount + (SYSTICK->LOAD - SYSTICK->VAL) / (PLL_N * 1000);
 }
 __attribute__((weak)) void SysTick_Handler()
 {

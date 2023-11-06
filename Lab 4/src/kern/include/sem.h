@@ -2,8 +2,6 @@
 #define __SEM_H
 #include <types.h>
 
-int semaphore;
-
 extern void sem_dec(const void *semaphore);
 extern void sem_inc(const void *semaphore);
 

@@ -32,9 +32,9 @@
 #include <schedule.h>
 #include <sem.h>
 
-#define STOP 10000000
+#define STOP 1000000
 
-semaphore = 0;
+int semaphore = 0;
 
 TCB_TypeDef task[22], _sleep;
 int count = 0;
@@ -57,28 +57,33 @@ void task_sleep(void)
 
 void Task(void)
 {
+    TCB_TypeDef task = getpid(); /* It is an SVC call*/
+
+    uint8_t t1 = __getTime();
+
+    kprintf("Response Time: %d\n", t1);
+
     uint32_t value;
     uint32_t inc_count = 0;
     while (1)
     {
-        TCB_TypeDef task = getpid(); /* It is an SVC call*/
 
         // while (flag != 0)
         //     ;
 
         // flag = 1;
 
-        sem_inc(&semaphore);
+        // sem_inc(&semaphore);
 
-        //add_task(task);
+        // add_task(task);
 
         value = count;
         value++;
 
         if (value != count + 1)
         {
-            printf("Task %d ", task.task_id);
-            printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
+            // printf("Task %d ", task.task_id);
+            // printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
         }
         else
         {
@@ -88,18 +93,22 @@ void Task(void)
 
         // flag = 0;
 
-        sem_dec(&semaphore);
+        // sem_dec(&semaphore);
 
         if (count >= STOP)
         {
-            printf("Total increment done by task %d is: %d\n\r", task.task_id, inc_count);
-            printf("Total increment done by task is: %d\n\r", inc_count);
+            // printf("Total increment done by task %d is: %d\n\r", task.task_id, inc_count);
+            // printf("Total increment done by task is: %d\n\r", inc_count);
 
             break;
         }
 
         // task = get_task();
     }
+    uint8_t t2 = __getTime();
+
+    kprintf("Completion Time: %d\n", t2);
+
     exit();
 }
 
@@ -118,7 +127,7 @@ void kmain(void)
     __NVIC_SetPriority(SysTick_IRQn, 0x2);
     __NVIC_SetPriority(PendSV_IRQn, 0xFF);
 
-    int task_count = 20;
+    int task_count = 5;
 
     for (int i = 0; i < task_count; i++)
     {
@@ -129,11 +138,13 @@ void kmain(void)
 
     initialize_queue();
 
+    uint8_t x = __getTime();
+
+    kprintf("Arrival Time: %d\n", x);
+
     for (int i = 0; i < task_count; i++)
         add_to_ready_queue(task + i);
     set_sleeping_task(&_sleep);
-
-    unprivileged_mode();
 
     set_task_pending(1);
 

@@ -18,6 +18,7 @@ void task_start(void)
         kprintf("There is no task in the queue to start\n\r");
         return;
     }
+
     TCB_TypeDef *qf = ready_queue_front_();
     current = qf;
     current->status = RUNNING;
