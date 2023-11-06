@@ -59,9 +59,8 @@ void Task(void)
 {
     TCB_TypeDef task = getpid(); /* It is an SVC call*/
 
-    uint16_t t1 = __getTime();
-
-    kprintf("Response Time of Task %d: %dms\n",task.task_id, t1);
+    task.reponse_time_t = __getTime();
+    task.execution_time_t = 0;
 
     uint32_t value;
     uint32_t inc_count = 0;
@@ -106,9 +105,7 @@ void Task(void)
         // task = get_task();
     }
 
-    uint16_t t2 = __getTime();
-
-    kprintf("Completion Time of Task %d: %dms\n",task.task_id, t2);
+    task.completion_time_t = __getTime();
 
     exit();
 }
