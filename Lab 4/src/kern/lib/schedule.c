@@ -25,8 +25,6 @@ void task_start(void)
     TCB_TypeDef *qf = ready_queue_front_();
     current = qf;
 
-    // moveHead();
-
     t1 = __getTime();
     current->response_time = t1;
 
@@ -75,19 +73,6 @@ TCB_TypeDef *ready_queue_front_(void)
     rq.st = (rq.st + 1) % rq.max;
     rq.size--;
     return *((rq.q) + front);
-}
-
-void moveHead()
-{
-    int x = current->task_id - 1000;
-    int y = (x + 1) % task_count;
-    uint16_t z = pri_vals[y];
-
-    if (current->priority > z || finished[x])
-    {
-        rq.st = (rq.st + 1) % rq.max;
-        rq.size--;
-    }
 }
 
 int is_ready_queue_empty(void)
@@ -162,21 +147,12 @@ void context_switch(void)
     current->completion_time = t2;
     t1 = t2;
 
-    kprintf("Task %d", current->task_id);
-
     if (finished[index])
     {
         TCB_TypeDef *qf = ready_queue_front_();
         current = qf;
         current->status = RUNNING;
     }
-
-    // moveHead();
-
-    if (current->task_id == 1000 + task_count)
-        kprintf("\n");
-    else
-        kprintf(" to Task %d\n", current->task_id);
 
     if (current->response_time == 0)
         current->response_time = t2;
