@@ -6,6 +6,8 @@ BlockedQ_TypeDef bq;
 TCB_TypeDef *current, *__sleep;
 uint16_t t1, t2;
 
+uint16_t pri_vals[task_count] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+
 void set_sleeping_task(TCB_TypeDef *s)
 {
     __sleep = s;
@@ -22,6 +24,8 @@ void task_start(void)
 
     TCB_TypeDef *qf = ready_queue_front_();
     current = qf;
+
+    // moveHead();
 
     t1 = __getTime();
     current->response_time = t1;
@@ -61,20 +65,6 @@ void add_to_ready_queue(TCB_TypeDef *t)
     }
 }
 
-void add_to_blocked_queue(TCB_TypeDef *t)
-{
-    if (bq.max >= bq.size + 1)
-    {
-        bq.ed = (bq.ed + 1) % bq.max;
-        bq.q[bq.ed] = t;
-        bq.size++;
-    }
-    else
-    {
-        kprintf("The blocked queue is full, thus the task could not be added\n\r");
-    }
-}
-
 TCB_TypeDef *ready_queue_front_(void)
 {
     if (is_ready_queue_empty() == 0)
@@ -87,22 +77,22 @@ TCB_TypeDef *ready_queue_front_(void)
     return *((rq.q) + front);
 }
 
-TCB_TypeDef *blocked_queue_front_(void)
+void moveHead()
 {
-    int front = bq.st;
-    bq.st = (bq.st + 1) % bq.max;
-    bq.size--;
-    return *((bq.q) + front);
+    int x = current->task_id - 1000;
+    int y = (x + 1) % task_count;
+    uint16_t z = pri_vals[y];
+
+    if (current->priority > z || finished[x])
+    {
+        rq.st = (rq.st + 1) % rq.max;
+        rq.size--;
+    }
 }
 
 int is_ready_queue_empty(void)
 {
     return rq.size;
-}
-
-int is_blocked_queue_empty(void)
-{
-    return bq.size;
 }
 
 const uint16_t initial_task_id = 1000;
@@ -116,11 +106,14 @@ uint16_t generate_task_id(void)
 
 void task_create(TCB_TypeDef *tcb, void (*task_func)(void), uint32_t *stack)
 {
+    uint16_t x = generate_task_id();
+
     // Initialize the TCB fields
     tcb->magic_number = 0xFECABAA0;
 
     // Generate a unique ID for the task
-    tcb->task_id = generate_task_id();
+    tcb->task_id = x;
+    tcb->priority = pri_vals[x - 1000];
     tcb->status = READY;
     tcb->starting_time = __getTime();
     tcb->execution_time = 0;
@@ -156,27 +149,38 @@ void task_create(TCB_TypeDef *tcb, void (*task_func)(void), uint32_t *stack)
 
 void context_switch(void)
 {
-    if (current->status == RUNNING)
+    int index = current->task_id - 1000;
+
+    if (finished[index] && current->status == RUNNING)
     {
         current->status = READY;
         add_to_ready_queue(current);
     }
-
-    else if (current->status == BLOCKED)
-        add_to_blocked_queue(current);
 
     t2 = __getTime();
     current->execution_time += t2 - t1;
     current->completion_time = t2;
     t1 = t2;
 
-    TCB_TypeDef *qf = ready_queue_front_();
-    current = qf;
+    kprintf("Task %d", current->task_id);
+
+    if (finished[index])
+    {
+        TCB_TypeDef *qf = ready_queue_front_();
+        current = qf;
+        current->status = RUNNING;
+    }
+
+    // moveHead();
+
+    if (current->task_id == 1000 + task_count)
+        kprintf("\n");
+    else
+        kprintf(" to Task %d\n", current->task_id);
 
     if (current->response_time == 0)
         current->response_time = t2;
 
-    current->status = RUNNING;
     return;
 }
 

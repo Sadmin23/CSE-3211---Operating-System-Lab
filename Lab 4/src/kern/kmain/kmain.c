@@ -2,15 +2,16 @@
 #include <schedule.h>
 #include <sem.h>
 
-#define STOP 1000000
+#define STOP 10000000
 
 int semaphore = 0;
 
 TCB_TypeDef task[22], _sleep;
 int count = 0;
 int flag = 0;
-int task_count = 10;
 int x = 10;
+
+finished[task_count] = {0};
 
 void print_report()
 {
@@ -80,6 +81,9 @@ void Task(void)
 
         // task = get_task();
     }
+
+    int index = task.task_id - 1000;
+    finished[index] = 1;
 
     exit();
 }

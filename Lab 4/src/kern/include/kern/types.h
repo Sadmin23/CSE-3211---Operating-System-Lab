@@ -45,7 +45,7 @@ typedef struct task_tcb
 	uint32_t *psp;			 // task stack pointer or stackframe address
 	uint16_t status;		 // task status: running, waiting, ready, killed, or terminated
 	uint16_t execution_time; // total execution time (in ms)
-	uint16_t waiting_time;	 // total waiting time (in ms)
+	uint16_t priority;	 // total waiting time (in ms)
 	uint16_t starting_time;
 	uint16_t response_time;
 	uint16_t completion_time;
@@ -77,5 +77,9 @@ typedef struct dev_t
 	int t_access;  // open type O_RDONLY, O_WRDONLY, O_APPEND
 	int op_addr;   // Address of the datastructure operations
 } dev_table;
+
+#define task_count 10 // Define the size of the array
+
+extern int finished[task_count];
 
 #endif
