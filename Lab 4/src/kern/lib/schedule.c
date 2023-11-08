@@ -136,7 +136,7 @@ void context_switch(void)
 {
     int index = current->task_id - 1000;
 
-    if (finished[index] && current->status == RUNNING)
+    if ((finished[index] || pri_vals[index] > pri_vals[(index + 1) % task_count]) && current->status == RUNNING)
     {
         current->status = READY;
         add_to_ready_queue(current);
@@ -147,12 +147,18 @@ void context_switch(void)
     current->completion_time = t2;
     t1 = t2;
 
-    if (finished[index])
+    // if (index != task_count)
+    //     kprintf("Task %d to ", current->task_id);
+
+    if (finished[index] || pri_vals[index] > pri_vals[(index + 1) % task_count])
     {
         TCB_TypeDef *qf = ready_queue_front_();
         current = qf;
         current->status = RUNNING;
     }
+
+    // if (index != task_count)
+    //     kprintf("Task %d\n", current->task_id);
 
     if (current->response_time == 0)
         current->response_time = t2;

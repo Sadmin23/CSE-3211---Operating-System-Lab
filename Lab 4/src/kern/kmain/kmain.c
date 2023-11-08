@@ -58,8 +58,8 @@ void Task(void)
 
         if (value != count + 1)
         {
-            printf("Task %d ", task.task_id);
-            printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
+            // printf("Task %d ", task.task_id);
+            // printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
         }
         else
         {
@@ -73,8 +73,8 @@ void Task(void)
 
         if (count >= STOP)
         {
-            printf("Total increment done by task %d is: %d\n\r", task.task_id, inc_count);
-            printf("Total increment done by task is: %d\n\r", inc_count);
+            // printf("Total increment done by task %d is: %d\n\r", task.task_id, inc_count);
+            // printf("Total increment done by task is: %d\n\r", inc_count);
 
             break;
         }
