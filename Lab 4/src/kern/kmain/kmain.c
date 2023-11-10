@@ -2,9 +2,9 @@
 #include <schedule.h>
 #include <sem.h>
 
-#define STOP 1000000
+#define STOP 10000000
 
-int semaphore = 0;
+semaphore = 0;
 
 TCB_TypeDef task[22], _sleep;
 int count = 0;
@@ -43,23 +43,15 @@ void Task(void)
 
     while (1)
     {
-
-        // while (flag != 0)
-        //     ;
-
-        // flag = 1;
-
-        // sem_inc(&semaphore);
-
-        // add_task(task);
+        sem_inc(&semaphore);
 
         value = count;
         value++;
 
         if (value != count + 1)
         {
-            // printf("Task %d ", task.task_id);
-            // printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
+            printf("Task %d ", task.task_id);
+            printf("Error %d != %d\n\r", value, count + 1); /* It is an SVC call*/
         }
         else
         {
@@ -67,19 +59,15 @@ void Task(void)
             inc_count++;
         }
 
-        // flag = 0;
-
-        // sem_dec(&semaphore);
+        sem_dec(&semaphore);
 
         if (count >= STOP)
         {
-            // printf("Total increment done by task %d is: %d\n\r", task.task_id, inc_count);
-            // printf("Total increment done by task is: %d\n\r", inc_count);
+            printf("Total increment done by task %d is: %d\n\r", task.task_id, inc_count);
+            printf("Total increment done by task is: %d\n\r", inc_count);
 
             break;
         }
-
-        // task = get_task();
     }
 
     int index = task.task_id - 1000;

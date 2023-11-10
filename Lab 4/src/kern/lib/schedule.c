@@ -44,9 +44,9 @@ void initialize_queue(void)
     rq.ed = -1;
 
     bq.max = 22;
-    rq.size = 0;
-    rq.st = 0;
-    rq.ed = -1;
+    bq.size = 0;
+    bq.st = 0;
+    bq.ed = -1;
 }
 
 void add_to_ready_queue(TCB_TypeDef *t)
@@ -56,6 +56,20 @@ void add_to_ready_queue(TCB_TypeDef *t)
         rq.ed = (rq.ed + 1) % rq.max;
         rq.q[rq.ed] = t;
         rq.size++;
+    }
+    else
+    {
+        kprintf("The ready queue is full, thus the task could not be added\n\r");
+    }
+}
+
+void add_to_blocked_queue(TCB_TypeDef *t)
+{
+    if (bq.max >= bq.size + 1)
+    {
+        bq.ed = (bq.ed + 1) % bq.max;
+        bq.q[bq.ed] = t;
+        bq.size++;
     }
     else
     {
@@ -75,9 +89,22 @@ TCB_TypeDef *ready_queue_front_(void)
     return *((rq.q) + front);
 }
 
+TCB_TypeDef *blocked_queue_front_(void)
+{
+    int front = bq.st;
+    bq.st = (bq.st + 1) % bq.max;
+    bq.size--;
+    return *((bq.q) + front);
+}
+
 int is_ready_queue_empty(void)
 {
     return rq.size;
+}
+
+int is_blocked_queue_empty(void)
+{
+    return bq.size;
 }
 
 const uint16_t initial_task_id = 1000;
@@ -136,12 +163,19 @@ void context_switch(void)
 {
     int index = current->task_id - 1000;
 
-    if ((finished[index] || pri_vals[index] > pri_vals[(index + 1) % task_count]) && current->status == RUNNING)
-    {
-        current->status = READY;
-        add_to_ready_queue(current);
-    }
+    int condition = 1 && !semaphore; // RR
 
+    // int condition = (finished[index] || pri_vals[index] > pri_vals[(index + 1) % task_count]); // P
+
+    // int condition = finished[index]; // FCFS
+    if (condition)
+    {
+        if (current->status == RUNNING)
+        {
+            current->status = READY;
+            add_to_ready_queue(current);
+        }
+    }
     t2 = __getTime();
     current->execution_time += t2 - t1;
     current->completion_time = t2;
@@ -150,7 +184,7 @@ void context_switch(void)
     // if (index != task_count)
     //     kprintf("Task %d to ", current->task_id);
 
-    if (finished[index] || pri_vals[index] > pri_vals[(index + 1) % task_count])
+    if (condition)
     {
         TCB_TypeDef *qf = ready_queue_front_();
         current = qf;

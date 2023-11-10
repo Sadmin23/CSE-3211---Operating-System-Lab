@@ -9,8 +9,8 @@ extern void sem_inc(const void *semaphore)
     __asm volatile("1: LDREX R1, [%0]"
                    :
                    : "r"(semaphore));
-    __asm volatile("CMP R1, #0");
-    __asm volatile("BNE 1b");
+    //__asm volatile("CMP R1, #0");
+    //__asm volatile("BNE 1b");
     __asm volatile("ADD R1, #1");
     __asm volatile("STREX R2,R1,[%0]"
                    : "=r"(semaphore));
@@ -35,29 +35,4 @@ extern void sem_dec(const void *semaphore)
     __asm volatile("DMB");
 
     return;
-}
-
-unsigned int task_semaphore = 0;
-
-void add_task(TCB_TypeDef task)
-{
-
-    if (task_semaphore == 0)
-        task_semaphore++;
-
-    else
-    {
-        task.status = 5;
-        yield();
-    }
-
-    return;
-}
-TCB_TypeDef get_task(void)
-{
-    // sem_dec(&task_semaphore);
-
-    //TCB_TypeDef tmptask = blocked_queue_front_();
-
-    //return tmptask;
 }
