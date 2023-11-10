@@ -73,7 +73,7 @@ void add_to_blocked_queue(TCB_TypeDef *t)
     }
     else
     {
-        kprintf("The ready queue is full, thus the task could not be added\n\r");
+        kprintf("The blocked queue is full, thus the task could not be added\n\r");
     }
 }
 
@@ -176,6 +176,16 @@ void context_switch(void)
             add_to_ready_queue(current);
         }
     }
+    else
+    {
+        if (is_ready_queue_empty())
+        {
+            TCB_TypeDef *qf = ready_queue_front_();
+            qf->status = BLOCKED;
+            add_to_blocked_queue(qf);
+        }
+    }
+
     t2 = __getTime();
     current->execution_time += t2 - t1;
     current->completion_time = t2;
@@ -186,7 +196,12 @@ void context_switch(void)
 
     if (condition)
     {
-        TCB_TypeDef *qf = ready_queue_front_();
+        TCB_TypeDef *qf;
+
+        if (!is_blocked_queue_empty())
+            qf = ready_queue_front_();
+        else
+            qf = blocked_queue_front_();
         current = qf;
         current->status = RUNNING;
     }

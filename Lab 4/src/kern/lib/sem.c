@@ -34,5 +34,10 @@ extern void sem_dec(const void *semaphore)
     __asm volatile("BNE 1b");
     __asm volatile("DMB");
 
+    if (is_blocked_queue_empty())
+    {
+        yield();
+    }
+
     return;
 }

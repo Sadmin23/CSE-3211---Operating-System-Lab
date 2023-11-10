@@ -64,8 +64,6 @@ void Task(void)
         if (count >= STOP)
         {
             printf("Total increment done by task %d is: %d\n\r", task.task_id, inc_count);
-            printf("Total increment done by task is: %d\n\r", inc_count);
-
             break;
         }
     }
