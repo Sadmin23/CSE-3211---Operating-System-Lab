@@ -34,16 +34,34 @@ void print_number(int index, int number)
     kprintf("%dms |", number);
 }
 
+void print_line()
+{
+    kprintf("+------------");
+    for (int i = 0; i < 6; i++)
+    {
+        kprintf("+");
+        int space = spaces[i] + 2;
+        for (int j = 0; j < space; j++)
+        {
+            kprintf("-");
+        }
+    }
+    kprintf("+\n");
+}
+
 void print_report()
 {
-    uint16_t total_starting_time = 0;
-    uint16_t total_response_time = 0;
-    uint16_t total_completion_time = 0;
-    uint16_t total_execution_time = 0;
-    uint16_t total_waiting_time = 0;
-    uint16_t total_turnaround_time = 0;
+    uint32_t total_starting_time = 0;
+    uint32_t total_response_time = 0;
+    uint32_t total_completion_time = 0;
+    uint32_t total_execution_time = 0;
+    uint32_t total_waiting_time = 0;
+    uint32_t total_turnaround_time = 0;
 
-    kprintf("\n| Process Id | Start time | Response time | Completion time | Execution Time | Turnaround time | Waiting time |\n");
+    kprintf("\n");
+    print_line();
+    kprintf("| Process Id | Start time | Response time | Completion time | Execution Time | Turnaround time | Waiting time |\n");
+    print_line();
 
     for (int i = 0; i < task_count; i++)
     {
@@ -65,6 +83,8 @@ void print_report()
         print_number(5, waiting_time);
         kprintf("\n");
 
+        // print_line();
+
         total_response_time += response_time;
         total_starting_time += starting_time;
         total_completion_time += completion_time;
@@ -72,6 +92,7 @@ void print_report()
         total_waiting_time += waiting_time;
         total_turnaround_time += turnaround_time;
     }
+    print_line();
 
     total_response_time /= task_count;
     total_starting_time /= task_count;
@@ -80,13 +101,16 @@ void print_report()
     total_waiting_time /= task_count;
     total_turnaround_time /= task_count;
 
-    kprintf("\n%dms %dms %dms %dms %dms %dms\n",
-            total_starting_time,
-            total_response_time,
-            total_completion_time,
-            total_execution_time,
-            total_waiting_time,
-            total_turnaround_time);
+    kprintf("|    Average |");
+    print_number(0, total_starting_time);
+    print_number(1, total_response_time);
+    print_number(2, total_completion_time);
+    print_number(3, total_execution_time);
+    print_number(4, total_turnaround_time);
+    print_number(5, total_waiting_time);
+    kprintf("\n");
+
+    print_line();
 }
 
 void task_sleep(void)
@@ -151,6 +175,11 @@ void kmain(void)
     __NVIC_SetPriority(SVCall_IRQn, 1);
     __NVIC_SetPriority(SysTick_IRQn, 0x2);
     __NVIC_SetPriority(PendSV_IRQn, 0xFF);
+
+    kprintf("\nPRESS 0 FOR SCHEDULING BY ROUND ROBIN\n");
+    kprintf("PRESS 1 FOR USING SEMAPHORE\n");
+    kprintf("PRESS 2 FOR SCHEDULING BY FIRST COME FIRST SERVE\n");
+    kprintf("PRESS 3 FOR SCHEDULING BY PRIORITY\n\n");
 
     kscanf("%d", &option);
 
