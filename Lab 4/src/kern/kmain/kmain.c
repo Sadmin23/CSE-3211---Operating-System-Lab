@@ -5,6 +5,8 @@
 #define STOP 10000000
 
 semaphore = 0;
+option;
+condition;
 
 TCB_TypeDef task[22], _sleep;
 int count = 0;
@@ -15,13 +17,15 @@ int spaces[6] = {10, 13, 15, 14, 15, 12};
 
 void print_number(int index, int number)
 {
-    int space = spaces[index] - 5;
+    int space = spaces[index] - 6;
 
     if (number < 10)
-        space += 3;
+        space += 4;
     else if (number < 100)
-        space += 2;
+        space += 3;
     else if (number < 1000)
+        space += 2;
+    else if (number < 10000)
         space += 1;
 
     for (int i = 0; i < space; i++)
@@ -108,7 +112,8 @@ void Task(void)
 
     while (1)
     {
-        // sem_inc(&semaphore);
+        if (option == 1)
+            sem_inc(&semaphore);
 
         value = count;
         value++;
@@ -124,7 +129,8 @@ void Task(void)
             inc_count++;
         }
 
-        // sem_dec(&semaphore);
+        if (option == 1)
+            sem_dec(&semaphore);
 
         if (count >= STOP)
         {
@@ -145,6 +151,8 @@ void kmain(void)
     __NVIC_SetPriority(SVCall_IRQn, 1);
     __NVIC_SetPriority(SysTick_IRQn, 0x2);
     __NVIC_SetPriority(PendSV_IRQn, 0xFF);
+
+    kscanf("%d", &option);
 
     for (int i = 0; i < task_count; i++)
     {

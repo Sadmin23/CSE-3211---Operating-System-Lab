@@ -85,5 +85,6 @@ extern int finished[task_count];
 extern int semaphore;
 
 extern int option;
+extern int condition;
 
 #endif

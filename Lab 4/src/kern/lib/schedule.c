@@ -163,13 +163,32 @@ void context_switch(void)
 {
     int index = current->task_id - 1000;
 
-    int condition = 1;
+    condition = 1;
 
     // int condition = 1 && !semaphore; // RR
 
     // int condition = (finished[index] || pri_vals[index] > pri_vals[(index + 1) % task_count]); // P
 
     // int condition = finished[index]; // FCFS
+
+    switch (option)
+    {
+    case 0: // RR
+        condition = 1;
+        break;
+    case 1: // RR with semaphore
+        condition = !semaphore;
+        break;
+    case 2: // FCFS
+        condition = finished[index];
+        break;
+    case 3: // P
+        condition = (finished[index] || pri_vals[index] > pri_vals[(index + 1) % task_count]);
+        break;
+    default:
+        condition = 1;
+        break;
+    }
 
     if (condition)
     {
@@ -181,11 +200,14 @@ void context_switch(void)
     }
     else
     {
-        if (is_ready_queue_empty())
+        if (option != 3)
         {
-            TCB_TypeDef *qf = ready_queue_front_();
-            qf->status = BLOCKED;
-            add_to_blocked_queue(qf);
+            if (is_ready_queue_empty())
+            {
+                TCB_TypeDef *qf = ready_queue_front_();
+                qf->status = BLOCKED;
+                add_to_blocked_queue(qf);
+            }
         }
     }
 
