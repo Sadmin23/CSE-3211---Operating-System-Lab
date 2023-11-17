@@ -163,11 +163,14 @@ void context_switch(void)
 {
     int index = current->task_id - 1000;
 
-    int condition = 1 && !semaphore; // RR
+    int condition = 1;
+
+    // int condition = 1 && !semaphore; // RR
 
     // int condition = (finished[index] || pri_vals[index] > pri_vals[(index + 1) % task_count]); // P
 
     // int condition = finished[index]; // FCFS
+
     if (condition)
     {
         if (current->status == RUNNING)

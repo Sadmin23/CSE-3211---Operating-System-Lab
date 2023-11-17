@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 
+ * Copyright (c) 2022
  * Computer Science and Engineering, University of Dhaka
  * Credit: CSE Batch 25 (starter) and Prof. Mosaddek Tushar
  *
@@ -27,76 +27,82 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
- 
+
 #include <kstdio.h>
 #include <stm32_peps.h>
 #include <usart.h>
 #include <kstring.h>
 /**
-* first argument define the type of string to kprintf and kscanf, 
-* %c for charater
-* %s for string, 
-* %d for integer
-* %x hexadecimal
-* %o octal number
-* %f for floating point number
-*/
+ * first argument define the type of string to kprintf and kscanf,
+ * %c for charater
+ * %s for string,
+ * %d for integer
+ * %x hexadecimal
+ * %o octal number
+ * %f for floating point number
+ */
 // Simplified version of printf
-void kprintf(char *format,...)
+void kprintf(char *format, ...)
 {
-//write your code here
+	// write your code here
 	char *tr;
 	uint32_t i;
 	uint8_t *str;
 	va_list list;
 	double dval;
-	//uint32_t *intval;
-	va_start(list,format);
-	for(tr = format;*tr != '\0';tr++)
+	// uint32_t *intval;
+	va_start(list, format);
+	for (tr = format; *tr != '\0'; tr++)
 	{
-		while(*tr != '%' && *tr!='\0')
+		while (*tr != '%' && *tr != '\0')
 		{
-		UART_SendChar(USART2,*tr);
-		tr++;
+			UART_SendChar(USART2, *tr);
+			tr++;
 		}
-		if(*tr == '\0') break;
+		if (*tr == '\0')
+			break;
 		tr++;
 		switch (*tr)
 		{
-		case 'c': i = va_arg(list,int);
-			UART_SendChar(USART2,i);
+		case 'c':
+			i = va_arg(list, int);
+			UART_SendChar(USART2, i);
 			break;
-		case 'd': i = va_arg(list,int);
-			if(i<0)
+		case 'd':
+			i = va_arg(list, int);
+			if (i < 0)
 			{
-				UART_SendChar(USART2,'-');
-				i=-i;				
+				UART_SendChar(USART2, '-');
+				i = -i;
 			}
-			_USART_WRITE(USART2,(uint8_t*)convert(i,10));
+			_USART_WRITE(USART2, (uint8_t *)convert(i, 10));
 			break;
-		case 'o': i = va_arg(list,int);
-			if(i<0)
+		case 'o':
+			i = va_arg(list, int);
+			if (i < 0)
 			{
-				UART_SendChar(USART2,'-');
-				i=-i;				
+				UART_SendChar(USART2, '-');
+				i = -i;
 			}
-			_USART_WRITE(USART2,(uint8_t*)convert(i,8));
+			_USART_WRITE(USART2, (uint8_t *)convert(i, 8));
 			break;
-		case 'x': i = va_arg(list,int);
-			if(i<0)
+		case 'x':
+			i = va_arg(list, int);
+			if (i < 0)
 			{
-				UART_SendChar(USART2,'-');
-				i=-i;				
+				UART_SendChar(USART2, '-');
+				i = -i;
 			}
-			_USART_WRITE(USART2,(uint8_t*)convert(i,16));
+			_USART_WRITE(USART2, (uint8_t *)convert(i, 16));
 			break;
-		case 's': str = va_arg(list,uint8_t*);
-			_USART_WRITE(USART2,str);
+		case 's':
+			str = va_arg(list, uint8_t *);
+			_USART_WRITE(USART2, str);
 			break;
-		case 'f': 
-			dval = va_arg(list,double);
-			_USART_WRITE(USART2,(uint8_t*)float2str(dval));
-			break;	
+		case 'f':
+			dval = va_arg(list, double);
+			_USART_WRITE(USART2, (uint8_t *)float2str(dval));
+			break;
 		default:
 			break;
 		}
@@ -105,48 +111,48 @@ void kprintf(char *format,...)
 }
 
 // Simplified version of scanf
-void kscanf(char *format,...)
+void kscanf(char *format, ...)
 {
-//write your code here
+	// write your code here
 	va_list list;
 	char *ptr;
 	uint8_t buff[50];
-	ptr=format;
-	va_start(list,format);
+	ptr = format;
+	va_start(list, format);
 	while (*ptr)
 	{
 		/* code */
-		if(*ptr == '%') //looking for format of an input
+		if (*ptr == '%') // looking for format of an input
 		{
 			ptr++;
 			switch (*ptr)
 			{
-			case /* constant-expression */ 'c': //charater
+			case /* constant-expression */ 'c': // charater
 				/* code */
-				*(uint8_t*)va_arg(list,uint8_t*)=UART_GetChar(USART2);
+				*(uint8_t *)va_arg(list, uint8_t *) = UART_GetChar(USART2);
 				break;
-			case 'd': //integer number 
-				_USART_READ_STR(USART2,buff,50); 
-				*(uint32_t*)va_arg(list,uint32_t*)=__str_to_num(buff,10);	
+			case 'd': // integer number
+				_USART_READ_STR(USART2, buff, 50);
+				*(uint32_t *)va_arg(list, uint32_t *) = __str_to_num(buff, 10);
 				break;
-			case 's': //need to update -- string
-				_USART_READ_STR(USART2,buff,50); 
-				*(uint32_t*)va_arg(list,uint32_t*)=__str_to_num(buff,10);	
+			case 's': // need to update -- string
+				_USART_READ_STR(USART2, buff, 50);
+				*(uint32_t *)va_arg(list, uint32_t *) = __str_to_num(buff, 10);
 				break;
-			case 'x': //hexadecimal number
-				_USART_READ_STR(USART2,buff,50); 
-				*(uint32_t*)va_arg(list,uint32_t*)=__str_to_num(buff,16);	
-				break;	
-			case 'o': //octal number
-				_USART_READ_STR(USART2,buff,50); 
-				*(uint32_t*)va_arg(list,uint32_t*)=__str_to_num(buff,8);	
-				break;	
-			case 'f': //floating point number
-				_USART_READ_STR(USART2,buff,50); 
-				// *(uint32_t*)va_arg(list,double*)= str2float(buff);	
-				*(float*)va_arg(list, float*)= str2float(buff);	
-				break;	
-			default: //rest not recognized
+			case 'x': // hexadecimal number
+				_USART_READ_STR(USART2, buff, 50);
+				*(uint32_t *)va_arg(list, uint32_t *) = __str_to_num(buff, 16);
+				break;
+			case 'o': // octal number
+				_USART_READ_STR(USART2, buff, 50);
+				*(uint32_t *)va_arg(list, uint32_t *) = __str_to_num(buff, 8);
+				break;
+			case 'f': // floating point number
+				_USART_READ_STR(USART2, buff, 50);
+				// *(uint32_t*)va_arg(list,double*)= str2float(buff);
+				*(float *)va_arg(list, float *) = str2float(buff);
+				break;
+			default: // rest not recognized
 				break;
 			}
 		}
@@ -155,31 +161,36 @@ void kscanf(char *format,...)
 	va_end(list);
 }
 
-char* kstrcpy(char* destination, unsigned char* source) {
-    // Copy characters from source to destination until '\0' (null character) is encountered
-    while (*source != '\0') {
-        *destination = *source;
-        destination++;
-        source++;
-    }
+char *kstrcpy(char *destination, unsigned char *source)
+{
+	// Copy characters from source to destination until '\0' (null character) is encountered
+	while (*source != '\0')
+	{
+		*destination = *source;
+		destination++;
+		source++;
+	}
 
-    // Null-terminate the destination string
-    *destination = '\0';
+	// Null-terminate the destination string
+	*destination = '\0';
 
-    return destination;  // Return the destination pointer
+	return destination; // Return the destination pointer
 }
 
-int kstrcmp(char* str1, unsigned char* str2) {
-    // Compare characters until a difference or the end of a string is reached
-    while (*str1 != '\0' && *str2 != '\0') {
-        if (*str1 != *str2) {
-            // If characters are different, return the difference
-            return (*str1 - *str2);
-        }
-        str1++;
-        str2++;
-    }
+int kstrcmp(char *str1, unsigned char *str2)
+{
+	// Compare characters until a difference or the end of a string is reached
+	while (*str1 != '\0' && *str2 != '\0')
+	{
+		if (*str1 != *str2)
+		{
+			// If characters are different, return the difference
+			return (*str1 - *str2);
+		}
+		str1++;
+		str2++;
+	}
 
-    // If one string is longer than the other, return the length difference
-    return (*str1 - *str2);
+	// If one string is longer than the other, return the length difference
+	return (*str1 - *str2);
 }
